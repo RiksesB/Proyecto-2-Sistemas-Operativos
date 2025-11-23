@@ -1,13 +1,20 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package util.excepciones;
 
-/**
- *
- * @author rdbae
- */
-public class EspacioInsuficienteException {
+// excepcion: no hay suficiente espacio en disco
+public class EspacioInsuficienteException extends Exception {
     
+
+    public EspacioInsuficienteException(String mensaje) {
+        super(mensaje);
+    }
+    
+        //mensaje: descripcion error, causa: excepcion que causa el error
+    
+    public EspacioInsuficienteException(String mensaje, Throwable causa) {
+        super(mensaje, causa);
+    }
+    
+    public EspacioInsuficienteException() {
+        super("No hay suficiente espacio disponible en el disco");
+    }
 }
