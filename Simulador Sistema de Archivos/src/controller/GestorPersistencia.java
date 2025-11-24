@@ -9,18 +9,13 @@ import model.archivos.NodoArbol;
 import util.estructuras.ListaEnlazada;
 import java.io.*;
 
-/**
- * maneja la persistencia del sistema de archivos
- *
- */
+
 public class GestorPersistencia {
     
     private static final String ARCHIVO_DATOS = "sistema_archivos.txt";
     private static final String SEPARADOR = "|";
     
-    /**
-     * Guarda el estado completo del sistema en un archivo de texto
-     */
+
     public boolean guardarSistema(SistemaArchivos sistema) {
         try {
             PrintWriter writer = new PrintWriter(new FileWriter(ARCHIVO_DATOS));
@@ -70,7 +65,7 @@ public class GestorPersistencia {
     private void guardarDirectorioRecursivo(PrintWriter writer, Directorio directorio, String ruta) {
         String rutaActual = ruta + "/" + directorio.getNombre();
         
-        // Guardar información del directorio
+
         writer.println("DIR" + SEPARADOR + 
                       directorio.getNombre() + SEPARADOR + 
                       rutaActual + SEPARADOR + 
@@ -250,7 +245,7 @@ public class GestorPersistencia {
             if (hijo != null && hijo.esDirectorio()) {
                 actual = (Directorio) hijo;
             } else {
-                return actual; // Retornar el último directorio válido
+                return actual; 
             }
         }
 

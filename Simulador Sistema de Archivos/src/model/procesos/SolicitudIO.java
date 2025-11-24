@@ -1,57 +1,68 @@
 package model.procesos;
 
+/**
+ * Representa una solicitud de entrada/salida al disco
+ */
 public class SolicitudIO {
-    private int procesoPID;
+    private int pid; 
     private TipoOperacion operacion;
     private int bloqueDestino;
-    private String archivoAsociado;
-
-    public SolicitudIO(int procesoPID, TipoOperacion operacion, int bloqueDestino, String archivoAsociado) {
-        this.procesoPID = procesoPID;
+    private String nombreArchivo;
+    private long tiempoSolicitud;
+    
+    public SolicitudIO(int pid, TipoOperacion operacion, int bloqueDestino, String nombreArchivo) {
+        this.pid = pid;
         this.operacion = operacion;
         this.bloqueDestino = bloqueDestino;
-        this.archivoAsociado = archivoAsociado;
+        this.nombreArchivo = nombreArchivo;
+        this.tiempoSolicitud = System.currentTimeMillis();
     }
+    
 
-    public int getProcesoPID() {
-        return procesoPID;
+    public long getTiempoEspera() {
+        return System.currentTimeMillis() - tiempoSolicitud;
     }
-
+    
+    // Getters y Setters
+    public int getPid() {
+        return pid;
+    }
+    
+    public void setPid(int pid) {
+        this.pid = pid;
+    }
+    
     public TipoOperacion getOperacion() {
         return operacion;
     }
-
-    public int getBloqueDestino() {
-        return bloqueDestino;
-    }
-
-    public String getArchivoAsociado() {
-        return archivoAsociado;
-    }
-
-    public void setProcesoPID(int procesoPID) {
-        this.procesoPID = procesoPID;
-    }
-
+    
     public void setOperacion(TipoOperacion operacion) {
         this.operacion = operacion;
     }
-
+    
+    public int getBloqueDestino() {
+        return bloqueDestino;
+    }
+    
     public void setBloqueDestino(int bloqueDestino) {
         this.bloqueDestino = bloqueDestino;
     }
-
-    public void setArchivoAsociado(String archivoAsociado) {
-        this.archivoAsociado = archivoAsociado;
+    
+    public String getNombreArchivo() {
+        return nombreArchivo;
     }
-
+    
+    public void setNombreArchivo(String nombreArchivo) {
+        this.nombreArchivo = nombreArchivo;
+    }
+    
+    public long getTiempoSolicitud() {
+        return tiempoSolicitud;
+    }
+    
     @Override
     public String toString() {
-        return "SolicitudIO{" +
-                "PID=" + procesoPID +
-                ", op=" + operacion +
-                ", bloque=" + bloqueDestino +
-                ", archivo='" + archivoAsociado + '\'' +
-                '}';
+        return "Solicitud{PID=" + pid + ", " + operacion + 
+               ", bloque=" + bloqueDestino + ", archivo='" + nombreArchivo + "'}";
     }
 }
