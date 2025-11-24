@@ -3,28 +3,24 @@ package model.disco;
 import model.archivos.Archivo;
 import util.estructuras.ListaEnlazada;
 
-/**
- * Representa la tabla de asignación de archivos (FAT simplificada)
- */
 public class TablaAsignacion {
     
-    /**
-     * Clase interna para representar una entrada en la tabla
-     */
     public static class EntradaTabla {
         private String nombreArchivo;
         private int cantidadBloques;
         private int primerBloque;
         private String propietario;
         private String colorHex;
+        private String procesoCreador;
         
         public EntradaTabla(String nombreArchivo, int cantidadBloques, 
-                           int primerBloque, String propietario, String colorHex) {
+                           int primerBloque, String propietario, String colorHex, String procesoCreador) {
             this.nombreArchivo = nombreArchivo;
             this.cantidadBloques = cantidadBloques;
             this.primerBloque = primerBloque;
             this.propietario = propietario;
             this.colorHex = colorHex;
+            this.procesoCreador = procesoCreador;
         }
         
         // Getters
@@ -48,6 +44,10 @@ public class TablaAsignacion {
             return colorHex;
         }
         
+        public String getProcesoCreador() {
+            return procesoCreador;
+        }
+        
         @Override
         public String toString() {
             return nombreArchivo + " | " + cantidadBloques + " bloques | Inicio: #" + primerBloque;
@@ -55,15 +55,11 @@ public class TablaAsignacion {
     }
     
     private ListaEnlazada<EntradaTabla> entradas;
-    
-    /**
-     * Constructor de la tabla de asignación
-     */
+ 
     public TablaAsignacion() {
         this.entradas = new ListaEnlazada<>();
     }
-    
-
+ 
     public void agregarArchivo(Archivo archivo) {
         if (archivo.getPrimerBloque() != null) {
             String propietario = archivo.getPropietario() != null ? 
@@ -75,17 +71,22 @@ public class TablaAsignacion {
                 archivo.getColor().getBlue()
             );
             
+            String procesoCreador = archivo.getProcesoCreador() != null ? 
+                                   archivo.getProcesoCreador() : "N/A";
+            
             EntradaTabla entrada = new EntradaTabla(
                 archivo.getNombre(),
                 archivo.getTamanioEnBloques(),
                 archivo.getPrimerBloque().getNumeroBloque(),
                 propietario,
-                colorHex
+                colorHex,
+                procesoCreador
             );
             
             entradas.agregarAlFinal(entrada);
         }
- 
+    }
+    
     public boolean eliminarArchivo(String nombreArchivo) {
         for (int i = 0; i < entradas.getTamanio(); i++) {
             EntradaTabla entrada = entradas.obtener(i);
@@ -96,7 +97,6 @@ public class TablaAsignacion {
         }
         return false;
     }
-    
 
     public EntradaTabla buscarArchivo(String nombreArchivo) {
         for (int i = 0; i < entradas.getTamanio(); i++) {
@@ -108,12 +108,12 @@ public class TablaAsignacion {
         return null;
     }
     
-
+ 
     public ListaEnlazada<EntradaTabla> getEntradas() {
         return entradas;
     }
     
-
+  
     public int getCantidadArchivos() {
         return entradas.getTamanio();
     }
@@ -123,7 +123,7 @@ public class TablaAsignacion {
         entradas.limpiar();
     }
     
-
+ 
     public String obtenerTablaFormateada() {
         StringBuilder sb = new StringBuilder();
         sb.append("=== TABLA DE ASIGNACIÓN DE ARCHIVOS ===\n");

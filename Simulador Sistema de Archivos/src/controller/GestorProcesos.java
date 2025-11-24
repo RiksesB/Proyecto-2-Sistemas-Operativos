@@ -90,7 +90,6 @@ public class GestorProcesos {
         ListaEnlazada<SolicitudIO> solicitudesOrdenadas = 
             gestorPlanificacion.planificar(copiaSOlicitudes, posicionCabezal);
         
-
         colaSolicitudesIO.limpiar();
         
         return solicitudesOrdenadas;
@@ -107,7 +106,6 @@ public class GestorProcesos {
             colaListos.encolar(proceso);
         }
     }
-    
 
     public void terminarProcesoActual() {
         if (procesoEnEjecucion != null) {
@@ -121,14 +119,12 @@ public class GestorProcesos {
         if (proceso != null) {
             proceso.setEstado(EstadoProceso.TERMINADO);
 
-            // Si era el proceso en ejecución, limpiarlo
             if (procesoEnEjecucion != null && procesoEnEjecucion.equals(proceso)) {
                 procesoEnEjecucion = null;
             }
         }
     }
     
-
     public Proceso buscarProcesoPorPID(int pid) {
         for (int i = 0; i < listaProcesos.getTamanio(); i++) {
             Proceso proceso = listaProcesos.obtener(i);
@@ -158,7 +154,6 @@ public class GestorProcesos {
         gestorPlanificacion.cambiarPlanificador(tipo);
     }
     
-
     public String obtenerEstadisticas() {
         StringBuilder sb = new StringBuilder();
         sb.append("=== ESTADÍSTICAS DE PROCESOS ===\n");
@@ -173,7 +168,6 @@ public class GestorProcesos {
         return sb.toString();
     }
     
-
     public void limpiarProcesosTerminados() {
         ListaEnlazada<Proceso> nuevaLista = new ListaEnlazada<>();
         
