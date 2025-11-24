@@ -9,10 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.swing.Timer;
 
-/**
- * Simulador de I/O que permite visualizar el proceso paso a paso
- * en lugar de ejecutarlo instantáneamente
- */
+
 public class SimuladorIO {
 
     public interface ObservadorSimulacion {
@@ -42,13 +39,10 @@ public class SimuladorIO {
         }
     }
 
-
     private EstadoSimulacion estadoActual;
-
-
     private GestorDisco gestorDisco;
 
-
+    // Variables 
     private Proceso procesoActual;
     private Archivo archivoActual;
     private model.archivos.Directorio directorioActual;
@@ -58,15 +52,15 @@ public class SimuladorIO {
     private int posicionCabezalDestino;
     private int cicloPausa;
 
-
+    // Configuracion
     private int velocidadSimulacion; 
     private boolean pausado;
     
-
+    // Observadores para sincronización con UI
     private List<ObservadorSimulacion> observadores;
     private Timer timerAuto;
 
-
+    
     public SimuladorIO(GestorProcesos gestorProcesos, GestorDisco gestorDisco) {
         this.gestorDisco = gestorDisco;
         this.estadoActual = EstadoSimulacion.ESPERANDO;
@@ -78,26 +72,25 @@ public class SimuladorIO {
         this.observadores = new ArrayList<>();
     }
     
-
+   
     public void agregarObservador(ObservadorSimulacion observador) {
         if (!observadores.contains(observador)) {
             observadores.add(observador);
         }
     }
     
-
+    
     public void eliminarObservador(ObservadorSimulacion observador) {
         observadores.remove(observador);
     }
     
-
     private void notificarCambio() {
         for (ObservadorSimulacion obs : observadores) {
             obs.onSimulacionActualizada();
         }
     }
 
-
+ 
     public void iniciarCreacionArchivo(Archivo archivo, model.archivos.Directorio directorio, int numeroBloquesNecesarios) {
         this.archivoActual = archivo;
         this.directorioActual = directorio;
@@ -108,7 +101,7 @@ public class SimuladorIO {
         notificarCambio();
     }
 
-
+   
     public void iniciarEliminacionArchivo(Archivo archivo) {
         this.archivoActual = archivo;
         this.estadoActual = EstadoSimulacion.CREANDO_PROCESO;
@@ -128,12 +121,10 @@ public class SimuladorIO {
         notificarCambio();
     }
 
-
     public boolean avanzarCiclo() {
         if (pausado || estadoActual == EstadoSimulacion.COMPLETADO) {
             return false;
         }
-
 
         if (cicloPausa > 0) {
             cicloPausa--;
@@ -182,7 +173,7 @@ public class SimuladorIO {
                 break;
 
             case MOVIENDO_CABEZAL:
-
+                // Mover el cabezal gradualmente
                 if (posicionCabezalActual < posicionCabezalDestino) {
                     posicionCabezalActual++;
                     gestorDisco.getDisco().setPosicionCabezal(posicionCabezalActual);
@@ -192,15 +183,15 @@ public class SimuladorIO {
                     gestorDisco.getDisco().setPosicionCabezal(posicionCabezalActual);
                     huboCambio = true;
                 } else {
-
+                    // Llegó al destino
                     estadoActual = EstadoSimulacion.ASIGNANDO_BLOQUE;
                     huboCambio = true;
                 }
-                cicloPausa = 0; 
+                cicloPausa = 0; // Sin pausa para movimiento suave
                 break;
 
             case ASIGNANDO_BLOQUE:
-
+                // Asignar o liberar el bloque
                 indiceSolicitudActual++;
                 
                 if (indiceSolicitudActual < solicitudesPendientes.getTamanio()) {
@@ -235,7 +226,7 @@ public class SimuladorIO {
         return true;
     }
     
-
+    
     public void iniciarAuto() {
         detenerAuto();
         
@@ -248,7 +239,7 @@ public class SimuladorIO {
         timerAuto.start();
     }
     
-
+   
     public void detenerAuto() {
         if (timerAuto != null && timerAuto.isRunning()) {
             timerAuto.stop();
@@ -276,12 +267,11 @@ public class SimuladorIO {
     public void completar() {
         detenerAuto();
         while (avanzarCiclo()) {
-            
         }
         notificarCambio();
     }
 
-
+  
     public void reiniciar() {
         detenerAuto();
         this.estadoActual = EstadoSimulacion.ESPERANDO;
@@ -293,7 +283,7 @@ public class SimuladorIO {
         notificarCambio();
     }
 
-
+ 
     public String obtenerInformacionCiclo() {
         StringBuilder sb = new StringBuilder();
         sb.append("=== ESTADO DE LA SIMULACIÓN ===\n");
@@ -333,7 +323,7 @@ public class SimuladorIO {
             return (double) indiceSolicitudActual / solicitudesPendientes.getTamanio();
         }
 
-        return 0.5; 
+        return 0.5; // En proceso
     }
 
     // Getters y Setters

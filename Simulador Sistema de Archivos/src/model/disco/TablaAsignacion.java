@@ -3,8 +3,10 @@ package model.disco;
 import model.archivos.Archivo;
 import util.estructuras.ListaEnlazada;
 
+
 public class TablaAsignacion {
     
+ 
     public static class EntradaTabla {
         private String nombreArchivo;
         private int cantidadBloques;
@@ -55,10 +57,12 @@ public class TablaAsignacion {
     }
     
     private ListaEnlazada<EntradaTabla> entradas;
- 
+    
+
     public TablaAsignacion() {
         this.entradas = new ListaEnlazada<>();
     }
+    
  
     public void agregarArchivo(Archivo archivo) {
         if (archivo.getPrimerBloque() != null) {
@@ -87,6 +91,7 @@ public class TablaAsignacion {
         }
     }
     
+
     public boolean eliminarArchivo(String nombreArchivo) {
         for (int i = 0; i < entradas.getTamanio(); i++) {
             EntradaTabla entrada = entradas.obtener(i);
@@ -97,6 +102,7 @@ public class TablaAsignacion {
         }
         return false;
     }
+    
 
     public EntradaTabla buscarArchivo(String nombreArchivo) {
         for (int i = 0; i < entradas.getTamanio(); i++) {
@@ -108,22 +114,22 @@ public class TablaAsignacion {
         return null;
     }
     
- 
+
     public ListaEnlazada<EntradaTabla> getEntradas() {
         return entradas;
     }
     
-  
+
     public int getCantidadArchivos() {
         return entradas.getTamanio();
     }
     
-
+  
     public void limpiar() {
         entradas.limpiar();
     }
     
- 
+
     public String obtenerTablaFormateada() {
         StringBuilder sb = new StringBuilder();
         sb.append("=== TABLA DE ASIGNACIÓN DE ARCHIVOS ===\n");

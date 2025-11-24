@@ -1,10 +1,12 @@
 package model.sistema;
 
+
 public class Usuario {
     private String nombre;
     private TipoUsuario tipo;
     private int id;
     private static int contadorId = 1;
+    
 
     public Usuario(String nombre, TipoUsuario tipo) {
         this.id = contadorId++;
@@ -22,6 +24,7 @@ public class Usuario {
         return tipo == TipoUsuario.ADMINISTRADOR;
     }
     
+  
     public boolean tienePermisosEscritura() {
         return esAdministrador();
     }

@@ -10,22 +10,17 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-/**
- * muestra los procesos del sistema
- */
 public class PanelProcesos extends JPanel {
     
     private ControladorPrincipal controlador;
     private JTable tableProcesos;
     private DefaultTableModel tableModel;
-    private String[] columnas = {"PID", "Nombre", "Estado", "Operación", "Archivo", "Usuario"};
-    private JButton btnEjecutar;
-    private JButton btnTerminar;
+    private String[] columnas = {"PID", "Nombre", "Estado", "Operación", "Archivo", "Bloques I/O", "Mov. Cabezal", "Usuario"};
     private JButton btnLimpiar;
     private JLabel lblInfo;
     private Timer timer;
     
-
+   
     public PanelProcesos(ControladorPrincipal controlador) {
         this.controlador = controlador;
         inicializarComponentes();
@@ -39,17 +34,17 @@ public class PanelProcesos extends JPanel {
         setLayout(new BorderLayout(5, 5));
         setBackground(new Color(43, 43, 43));
         
-
         JPanel panelSuperior = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 5));
-        panelSuperior.setBackground(new Color(50, 50, 50));
+        panelSuperior.setBackground(new Color(45, 45, 45));
         
         lblInfo = new JLabel("Procesos: 0");
         lblInfo.setForeground(Color.WHITE);
-        lblInfo.setFont(new Font("Arial", Font.BOLD, 11));
+        lblInfo.setFont(new Font("Consolas", Font.PLAIN, 11));
         panelSuperior.add(lblInfo);
         
         add(panelSuperior, BorderLayout.NORTH);
-
+        
+        // Tabla de procesos
         tableModel = new DefaultTableModel(columnas, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
@@ -58,63 +53,83 @@ public class PanelProcesos extends JPanel {
         };
         
         tableProcesos = new JTable(tableModel);
-        tableProcesos.setBackground(new Color(50, 50, 50));
-        tableProcesos.setForeground(Color.WHITE);
-        tableProcesos.setFont(new Font("Arial", Font.PLAIN, 11));
-        tableProcesos.setRowHeight(22);
+        tableProcesos.setBackground(new Color(60, 60, 60)); 
+        tableProcesos.setForeground(Color.WHITE); 
+        tableProcesos.setFont(new Font("Consolas", Font.PLAIN, 12));
+        tableProcesos.setRowHeight(25);
         tableProcesos.setGridColor(new Color(80, 80, 80));
-        tableProcesos.setSelectionBackground(new Color(75, 110, 175));
+        tableProcesos.setSelectionBackground(new Color(70, 130, 180)); 
+        tableProcesos.setSelectionForeground(Color.WHITE);
         
-        // Header
-        tableProcesos.getTableHeader().setBackground(new Color(60, 63, 65));
-        tableProcesos.getTableHeader().setForeground(Color.WHITE);
-        tableProcesos.getTableHeader().setFont(new Font("Arial", Font.BOLD, 11));
+        javax.swing.table.DefaultTableCellRenderer cellRenderer = new javax.swing.table.DefaultTableCellRenderer() {
+            @Override
+            public Component getTableCellRendererComponent(JTable table, Object value,
+                    boolean isSelected, boolean hasFocus, int row, int column) {
+                Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+                
+                if (!isSelected) {
+                    c.setBackground(new Color(60, 60, 60));
+                    c.setForeground(Color.WHITE);
+                    
+                    if (column == 2 && value != null) {
+                        String estado = value.toString();
+                        switch (estado) {
+                            case "NUEVO":
+                                c.setForeground(new Color(100, 200, 255)); // Azul claro
+                                break;
+                            case "LISTO":
+                                c.setForeground(new Color(255, 255, 100)); // Amarillo
+                                break;
+                            case "EJECUTANDO":
+                                c.setForeground(new Color(100, 255, 100)); // Verde
+                                break;
+                            case "TERMINADO":
+                                c.setForeground(new Color(180, 180, 180)); // Gris claro
+                                break;
+                        }
+                    }
+                } else {
+                    c.setBackground(new Color(70, 130, 180));
+                    c.setForeground(Color.WHITE);
+                }
+                
+                setHorizontalAlignment(SwingConstants.CENTER);
+                return c;
+            }
+        };
+        
+        for (int i = 0; i < tableProcesos.getColumnCount(); i++) {
+            tableProcesos.getColumnModel().getColumn(i).setCellRenderer(cellRenderer);
+        }
+        
+        tableProcesos.getTableHeader().setBackground(new Color(50, 50, 50));
+        tableProcesos.getTableHeader().setForeground(Color.BLACK); // Texto negro para header blanco
+        tableProcesos.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 12));
+        tableProcesos.getTableHeader().setBorder(BorderFactory.createLineBorder(new Color(80, 80, 80)));
+        tableProcesos.getTableHeader().setReorderingAllowed(false);
         
         JScrollPane scroll = new JScrollPane(tableProcesos);
         scroll.setBorder(BorderFactory.createEmptyBorder());
+        scroll.getViewport().setBackground(new Color(60, 60, 60));
         add(scroll, BorderLayout.CENTER);
         
-        // Panel de botones
         JPanel panelBotones = new JPanel(new FlowLayout(FlowLayout.CENTER, 5, 5));
-        panelBotones.setBackground(new Color(50, 50, 50));
+        panelBotones.setBackground(new Color(45, 45, 45));
         
-        btnEjecutar = new JButton("▶️ Ejecutar Siguiente");
-        btnEjecutar.setFocusPainted(false);
-        btnEjecutar.setToolTipText("Ejecuta el siguiente proceso en la cola");
-        panelBotones.add(btnEjecutar);
-        
-        btnTerminar = new JButton("⏹️ Terminar");
-        btnTerminar.setFocusPainted(false);
-        btnTerminar.setToolTipText("Termina el proceso seleccionado");
-        panelBotones.add(btnTerminar);
-        
-        btnLimpiar = new JButton("🗑️ Limpiar Terminados");
+        btnLimpiar = new JButton("🧹 Limpiar Terminados");
         btnLimpiar.setFocusPainted(false);
+        btnLimpiar.setBackground(new Color(100, 100, 100));
+        btnLimpiar.setForeground(Color.BLACK); // Texto negro
+        btnLimpiar.setFont(new Font("Segoe UI", Font.BOLD, 11));
+        btnLimpiar.setBorderPainted(false);
         btnLimpiar.setToolTipText("Elimina los procesos terminados");
         panelBotones.add(btnLimpiar);
         
         add(panelBotones, BorderLayout.SOUTH);
     }
     
-
     private void configurarEventos() {
-
-        btnEjecutar.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                ejecutarSiguienteProceso();
-            }
-        });
-        
-
-        btnTerminar.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                terminarProcesoSeleccionado();
-            }
-        });
-        
-
+        // Botón limpiar
         btnLimpiar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -122,7 +137,6 @@ public class PanelProcesos extends JPanel {
             }
         });
         
-
         tableProcesos.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent e) {
@@ -133,9 +147,8 @@ public class PanelProcesos extends JPanel {
         });
     }
     
-
     private void iniciarActualizacionAutomatica() {
-        timer = new Timer(2000, new ActionListener() {
+        timer = new Timer(500, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 actualizarTabla();
@@ -144,7 +157,6 @@ public class PanelProcesos extends JPanel {
         timer.start();
     }
     
-
     private void actualizarTabla() {
         tableModel.setRowCount(0); // Limpiar
         
@@ -153,27 +165,29 @@ public class PanelProcesos extends JPanel {
         for (int i = 0; i < procesos.getTamanio(); i++) {
             Proceso proceso = procesos.obtener(i);
             if (proceso != null) {
+                String bloquesIO = proceso.getBloquesIO();
+                if (bloquesIO == null || bloquesIO.isEmpty()) {
+                    bloquesIO = "-";
+                }
+                
+             
+                String movCabezal = String.valueOf(proceso.getMovimientoCabezal());
+                
                 Object[] fila = {
                     proceso.getPid(),
                     proceso.getNombre(),
                     proceso.getEstado(),
                     proceso.getOperacion(),
                     proceso.getArchivoObjetivo(),
+                    bloquesIO,
+                    movCabezal,
                     proceso.getPropietario().getNombre()
                 };
                 tableModel.addRow(fila);
-
-                int row = tableModel.getRowCount() - 1;
-                colorearFila(row, proceso.getEstado());
             }
         }
         
         actualizarInfo();
-    }
-    
-
-    private void colorearFila(int row, EstadoProceso estado) {
-
     }
     
 
@@ -189,75 +203,6 @@ public class PanelProcesos extends JPanel {
             "Total: %d  |  Listos: %d  |  Bloqueados: %d  |  Terminados: %d",
             total, listos, bloqueados, terminados
         ));
-    }
-    
-  
-    private void ejecutarSiguienteProceso() {
-        Proceso proceso = controlador.getGestorProcesos().ejecutarSiguienteProceso();
-        
-        if (proceso != null) {
-            actualizarTabla();
-            
-
-            Timer timer = new Timer(1000, new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    controlador.getGestorProcesos().terminarProcesoActual();
-                    actualizarTabla();
-                    notificarCambio();
-                }
-            });
-            timer.setRepeats(false);
-            timer.start();
-            
-        } else {
-            JOptionPane.showMessageDialog(
-                this,
-                "No hay procesos listos para ejecutar",
-                "Información",
-                JOptionPane.INFORMATION_MESSAGE
-            );
-        }
-    }
-    
-
-    private void terminarProcesoSeleccionado() {
-        int selectedRow = tableProcesos.getSelectedRow();
-        
-        if (selectedRow == -1) {
-            JOptionPane.showMessageDialog(
-                this,
-                "Seleccione un proceso",
-                "Error",
-                JOptionPane.ERROR_MESSAGE
-            );
-            return;
-        }
-        
-        int pid = (int) tableModel.getValueAt(selectedRow, 0);
-        Proceso proceso = controlador.getGestorProcesos().buscarProcesoPorPID(pid);
-        
-        if (proceso != null) {
-            int opcion = JOptionPane.showConfirmDialog(
-                this,
-                "¿Está seguro de terminar el proceso " + proceso.getNombre() + "?",
-                "Confirmar",
-                JOptionPane.YES_NO_OPTION,
-                JOptionPane.QUESTION_MESSAGE
-            );
-            
-            if (opcion == JOptionPane.YES_OPTION) {
-                controlador.getGestorProcesos().terminarProceso(proceso);
-                actualizarTabla();
-                
-                JOptionPane.showMessageDialog(
-                    this,
-                    "Proceso terminado",
-                    "Éxito",
-                    JOptionPane.INFORMATION_MESSAGE
-                );
-            }
-        }
     }
     
 
@@ -286,7 +231,7 @@ public class PanelProcesos extends JPanel {
         );
     }
     
- 
+
     private void mostrarDetallesProceso() {
         int selectedRow = tableProcesos.getSelectedRow();
         
@@ -313,14 +258,6 @@ public class PanelProcesos extends JPanel {
                 "Detalles del Proceso - PID " + pid,
                 JOptionPane.INFORMATION_MESSAGE
             );
-        }
-    }
-    
-  
-    private void notificarCambio() {
-        Window window = SwingUtilities.getWindowAncestor(this);
-        if (window instanceof VentanaPrincipal) {
-            ((VentanaPrincipal) window).actualizarTodo();
         }
     }
     

@@ -5,11 +5,6 @@ import util.estructuras.Cola;
 import util.estructuras.ListaEnlazada;
 import util.estructuras.Nodo;
 
-/**
- * Implementación del algoritmo LOOK
- * Similar a SCAN pero el cabezal solo va hasta la última solicitud en cada dirección,
- * no hasta el final del disco
- */
 public class PlanificadorLOOK implements PlanificadorDisco {
     
     private boolean direccionCreciente;
@@ -97,7 +92,7 @@ public class PlanificadorLOOK implements PlanificadorDisco {
     
     @Override
     public String getDescripcion() {
-        return "LOOK - Versión mejorada de SCAN que solo va hasta la última solicitud " +
+        return "LOOK -  SCAN que solo va hasta la última solicitud " +
                "en cada dirección, sin llegar al final del disco.";
     }
     

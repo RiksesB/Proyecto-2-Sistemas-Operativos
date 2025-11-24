@@ -4,35 +4,24 @@ import model.procesos.SolicitudIO;
 import util.estructuras.Cola;
 import util.estructuras.ListaEnlazada;
 
-/**
- * Clase que gestiona los diferentes algoritmos de planificación
- * y permite cambiar entre ellos dinámicamente
- */
+
 public class GestorPlanificacion {
     
     private PlanificadorDisco planificadorActual;
     private TipoPlanificacion tipoActual;
     
-    /**
-     * Constructor por defecto con FIFO
-     */
+
     public GestorPlanificacion() {
         this.tipoActual = TipoPlanificacion.FIFO;
         this.planificadorActual = new PlanificadorFIFO();
     }
     
-    /**
-     * Constructor con tipo específico
-     * @param tipo Tipo de planificación inicial
-     */
+  
     public GestorPlanificacion(TipoPlanificacion tipo) {
         cambiarPlanificador(tipo);
     }
     
-    /**
-     * Cambia el algoritmo de planificación
-     * @param tipo Nuevo tipo de planificación
-     */
+  
     public void cambiarPlanificador(TipoPlanificacion tipo) {
         this.tipoActual = tipo;
         
@@ -60,40 +49,22 @@ public class GestorPlanificacion {
         }
     }
     
-    /**
-     * Planifica las solicitudes usando el algoritmo actual
-     * @param solicitudes Cola de solicitudes
-     * @param posicionCabezal Posición actual del cabezal
-     * @return Lista ordenada de solicitudes
-     */
+
     public ListaEnlazada<SolicitudIO> planificar(Cola<SolicitudIO> solicitudes, int posicionCabezal) {
         return planificadorActual.planificar(solicitudes, posicionCabezal);
     }
     
-    /**
-     * Obtiene todos los tipos de planificación disponibles
-     * @return array con todos los tipos
-     */
+
     public static TipoPlanificacion[] getTiposDisponibles() {
         return TipoPlanificacion.values();
     }
     
-    /**
-     * Calcula el movimiento total para las solicitudes planificadas
-     * @param solicitudes Lista de solicitudes ordenadas
-     * @param posicionInicial Posición inicial del cabezal
-     * @return movimiento total
-     */
+ 
     public int calcularMovimientoTotal(ListaEnlazada<SolicitudIO> solicitudes, int posicionInicial) {
         return planificadorActual.calcularMovimientoTotal(solicitudes, posicionInicial);
     }
     
-    /**
-     * Compara el rendimiento de todos los algoritmos
-     * @param solicitudes Cola de solicitudes
-     * @param posicionCabezal Posición del cabezal
-     * @return String con la comparación
-     */
+
     public String compararAlgoritmos(Cola<SolicitudIO> solicitudes, int posicionCabezal) {
         StringBuilder sb = new StringBuilder();
         sb.append("=== COMPARACIÓN DE ALGORITMOS ===\n\n");

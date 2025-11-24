@@ -1,10 +1,12 @@
 package util.estructuras;
 
+
 public class Cola<T> {
     private Nodo<T> frente;
     private Nodo<T> fin;
     private int tamanio;
     
+
     public Cola() {
         this.frente = null;
         this.fin = null;
@@ -19,7 +21,7 @@ public class Cola<T> {
     public int getTamanio() {
         return tamanio;
     }
-    
+
     public void encolar(T dato) {
         Nodo<T> nuevoNodo = new Nodo<>(dato);
         
@@ -32,7 +34,7 @@ public class Cola<T> {
         }
         tamanio++;
     }
-    
+
     public T desencolar() {
         if (estaVacia()) {
             return null;
@@ -48,7 +50,7 @@ public class Cola<T> {
         tamanio--;
         return dato;
     }
-    
+
     public T verFrente() {
         if (estaVacia()) {
             return null;
@@ -62,7 +64,7 @@ public class Cola<T> {
         }
         return fin.getDato();
     }
-    
+
     public boolean contiene(T dato) {
         Nodo<T> actual = frente;
         
@@ -75,17 +77,17 @@ public class Cola<T> {
         
         return false;
     }
-    
+
     public void limpiar() {
         frente = null;
         fin = null;
         tamanio = 0;
     }
-    
+
     public Nodo<T> getFrente() {
         return frente;
     }
-    
+
     public Object[] toArray() {
         Object[] array = new Object[tamanio];
         Nodo<T> actual = frente;

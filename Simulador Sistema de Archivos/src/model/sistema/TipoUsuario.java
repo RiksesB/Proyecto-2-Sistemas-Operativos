@@ -1,6 +1,6 @@
 package model.sistema;
 
-//todos los tipos de usuario, o sea admin y usuario xd
+
 public enum TipoUsuario {
     ADMINISTRADOR("Administrador"),
     USUARIO("Usuario");

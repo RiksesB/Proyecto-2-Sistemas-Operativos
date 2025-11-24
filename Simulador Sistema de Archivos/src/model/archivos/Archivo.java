@@ -9,8 +9,8 @@ public class Archivo extends NodoArbol {
     private Bloque primerBloque;
     private ListaEnlazada<Bloque> bloques;
     private String contenido;
-    private Color color; // visualizacion en interfaz
-    private String procesoCreador; //proceso q creo el archivo
+    private Color color; 
+    private String procesoCreador; 
     
 
     public Archivo(String nombre, Directorio padre, int tamanioEnBloques) {
@@ -21,7 +21,7 @@ public class Archivo extends NodoArbol {
         this.color = generarColorAleatorio();
     }
     
-//color aleatorio
+  
     private Color generarColorAleatorio() {
         int r = (int)(Math.random() * 200) + 55;
         int g = (int)(Math.random() * 200) + 55;
@@ -39,21 +39,24 @@ public class Archivo extends NodoArbol {
         return tamanioEnBloques;
     }
     
+ 
     public void agregarBloque(Bloque bloque) {
         if (bloques.estaVacia()) {
             primerBloque = bloque;
         }
         bloques.agregarAlFinal(bloque);
     }
-    
+
     public int getCantidadBloquesAsignados() {
         return bloques.getTamanio();
     }
     
+ 
     public boolean estaCompleto() {
         return bloques.getTamanio() == tamanioEnBloques;
     }
-  
+    
+
     public ListaEnlazada<Integer> getBloquesAsignados() {
         ListaEnlazada<Integer> numeroBloques = new ListaEnlazada<>();
         for (int i = 0; i < bloques.getTamanio(); i++) {
@@ -120,6 +123,7 @@ public class Archivo extends NodoArbol {
         this.procesoCreador = procesoCreador;
     }
     
+
     public String obtenerInformacion() {
         StringBuilder sb = new StringBuilder();
         sb.append("Nombre: ").append(nombre).append("\n");

@@ -4,7 +4,6 @@ import model.sistema.Usuario;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-//clase para un archivo y directorio
 public abstract class NodoArbol {
     protected String nombre;
     protected Directorio padre;
@@ -13,7 +12,7 @@ public abstract class NodoArbol {
     protected LocalDateTime fechaCreacion;
     protected LocalDateTime fechaModificacion;
     
- 
+  
     public NodoArbol(String nombre, Directorio padre) {
         this.nombre = nombre;
         this.padre = padre;
@@ -22,12 +21,13 @@ public abstract class NodoArbol {
         this.fechaModificacion = LocalDateTime.now();
     }
     
-//es directorio?
+
     public abstract boolean esDirectorio();
     
-//tamaño del nodo
+ 
     public abstract int obtenerTamanio();
     
+   
     public String obtenerRutaCompleta() {
         if (padre == null) {
             return "/" + nombre;
@@ -39,16 +39,18 @@ public abstract class NodoArbol {
         return rutaPadre + "/" + nombre;
     }
     
-
+  
     public void actualizarFechaModificacion() {
         this.fechaModificacion = LocalDateTime.now();
     }
     
+   
     protected String formatearFecha(LocalDateTime fecha) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
         return fecha.format(formatter);
     }
     
+    // Getters y Setters
     public String getNombre() {
         return nombre;
     }

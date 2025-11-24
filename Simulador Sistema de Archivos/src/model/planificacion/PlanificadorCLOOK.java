@@ -5,11 +5,6 @@ import util.estructuras.Cola;
 import util.estructuras.ListaEnlazada;
 import util.estructuras.Nodo;
 
-/**
- * Implementación del algoritmo C-LOOK (Circular LOOK)
- * Similar a C-SCAN pero solo va hasta la última solicitud,
- * luego vuelve a la primera sin llegar al inicio del disco
- */
 public class PlanificadorCLOOK implements PlanificadorDisco {
     
     @Override
@@ -80,7 +75,7 @@ public class PlanificadorCLOOK implements PlanificadorDisco {
     
     @Override
     public String getDescripcion() {
-        return "Circular LOOK - Combina las ventajas de C-SCAN y LOOK, " +
+        return "Circular LOOK - Combina C-SCAN y LOOK, " +
                "solo va hasta las últimas solicitudes en modo circular.";
     }
     

@@ -13,17 +13,15 @@ public class GestorPersistencia {
     
     private static final String ARCHIVO_DATOS = "sistema_archivos.txt";
     private static final String SEPARADOR = "|";
-    
+
     public boolean guardarSistema(SistemaArchivos sistema) {
         try {
             PrintWriter writer = new PrintWriter(new FileWriter(ARCHIVO_DATOS));
-            
 
             writer.println("DISCO");
             writer.println(sistema.getDisco().getTamanioTotal());
             writer.println(sistema.getDisco().getBloquesOcupados());
-            
-
+    
             writer.println("USUARIOS");
             ListaEnlazada<Usuario> usuarios = sistema.getUsuarios();
             writer.println(usuarios.getTamanio());
@@ -36,8 +34,7 @@ public class GestorPersistencia {
                                  usuario.getTipo().name());
                 }
             }
-            
-  
+
             writer.println("USUARIO_ACTUAL");
             if (sistema.getUsuarioActual() != null) {
                 writer.println(sistema.getUsuarioActual().getId());
@@ -45,7 +42,6 @@ public class GestorPersistencia {
                 writer.println("1");
             }
             
-
             writer.println("ESTRUCTURA");
             guardarDirectorioRecursivo(writer, sistema.getRaiz(), "");
             
@@ -90,7 +86,7 @@ public class GestorPersistencia {
             }
         }
     }
-
+    
     public SistemaArchivos cargarSistema(int tamanioDiscoPorDefecto) {
         File archivo = new File(ARCHIVO_DATOS);
 
@@ -112,7 +108,7 @@ public class GestorPersistencia {
                     int tamanio = Integer.parseInt(reader.readLine());
                     sistema = new SistemaArchivos(tamanio);
                     gestorDisco = new GestorDisco(sistema.getDisco());
-                    reader.readLine();
+                    reader.readLine(); 
 
                 } else if (linea.equals("USUARIOS")) {
                     if (sistema == null) continue;
@@ -192,7 +188,6 @@ public class GestorPersistencia {
                 }
 
             } else if (linea.startsWith("FILE" + SEPARADOR)) {
-                // Cargar archivo
                 String[] datos = linea.split("\\" + SEPARADOR);
                 if (datos.length >= 6) {
                     String nombre = datos[1];
@@ -276,7 +271,7 @@ public class GestorPersistencia {
         StringBuilder sb = new StringBuilder();
         String indent = "  ".repeat(nivel);
         
-        sb.append(indent).append("📁 ").append(directorio.getNombre()).append("/\n");
+        sb.append(indent).append("  ").append(directorio.getNombre()).append("/\n");
         
         ListaEnlazada<NodoArbol> hijos = directorio.getHijos();
         for (int i = 0; i < hijos.getTamanio(); i++) {
@@ -286,7 +281,7 @@ public class GestorPersistencia {
                     sb.append(exportarDirectorioTexto((Directorio) hijo, nivel + 1));
                 } else {
                     Archivo archivo = (Archivo) hijo;
-                    sb.append(indent).append("  📄 ").append(archivo.getNombre())
+                    sb.append(indent).append(" ").append(archivo.getNombre())
                       .append(" (").append(archivo.getTamanioEnBloques()).append(" bloques)\n");
                 }
             }

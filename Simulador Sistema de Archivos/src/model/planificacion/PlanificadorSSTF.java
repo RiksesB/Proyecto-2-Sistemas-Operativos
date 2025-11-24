@@ -5,10 +5,6 @@ import util.estructuras.Cola;
 import util.estructuras.ListaEnlazada;
 import util.estructuras.Nodo;
 
-/**
- * Implementación del algoritmo SSTF (Shortest Seek Time First)
- * Siempre atiende la solicitud más cercana a la posición actual del cabezal
- */
 public class PlanificadorSSTF implements PlanificadorDisco {
     
     @Override
@@ -63,7 +59,7 @@ public class PlanificadorSSTF implements PlanificadorDisco {
     @Override
     public String getDescripcion() {
         return "Shortest Seek Time First - Siempre atiende la solicitud más cercana. " +
-               "Minimiza el movimiento del cabezal pero puede causar inanición.";
+               " ";
     }
     
     @Override

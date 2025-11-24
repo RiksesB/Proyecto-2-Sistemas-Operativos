@@ -5,11 +5,6 @@ import util.estructuras.Cola;
 import util.estructuras.ListaEnlazada;
 import util.estructuras.Nodo;
 
-/**
- * Implementación del algoritmo SCAN (Algoritmo del Ascensor)
- * El cabezal se mueve en una dirección atendiendo solicitudes hasta el final,
- * luego invierte la dirección
- */
 public class PlanificadorSCAN implements PlanificadorDisco {
     
     private boolean direccionCreciente; // true = hacia arriba, false = hacia abajo
@@ -61,11 +56,7 @@ public class PlanificadorSCAN implements PlanificadorDisco {
         return resultado;
     }
     
-    /**
-     * Ordena una lista de solicitudes por número de bloque
-     * @param lista Lista a ordenar
-     * @param ascendente true para orden ascendente, false para descendente
-     */
+ 
     private void ordenarPorBloque(ListaEnlazada<SolicitudIO> lista, boolean ascendente) {
         // Bubble sort simple
         int n = lista.getTamanio();
@@ -110,8 +101,8 @@ public class PlanificadorSCAN implements PlanificadorDisco {
     
     @Override
     public String getDescripcion() {
-        return "Algoritmo del Ascensor - El cabezal se mueve en una dirección atendiendo " +
-               "todas las solicitudes, luego invierte y hace lo mismo en la otra dirección.";
+        return " El cabezal se mueve en una dirección atendiendo " +
+               "todas las solicitudes, luego invierte y hace lo mismo en la otra dirección (Alg ascensor).";
     }
     
     public void setDireccionCreciente(boolean direccionCreciente) {

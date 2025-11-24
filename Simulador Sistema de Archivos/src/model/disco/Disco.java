@@ -5,6 +5,7 @@ import util.estructuras.ListaEnlazada;
 import util.excepciones.EspacioInsuficienteException;
 import java.util.Random;
 
+
 public class Disco {
     private Bloque[] bloques;
     private int tamanioTotal;
@@ -12,6 +13,7 @@ public class Disco {
     private int posicionCabezal; 
     private Random random; 
     
+  
     public Disco(int tamanioTotal) {
         this.tamanioTotal = tamanioTotal;
         this.bloques = new Bloque[tamanioTotal];
@@ -24,6 +26,7 @@ public class Disco {
         }
     }
     
+  
     public ListaEnlazada<Bloque> asignarBloques(Archivo archivo, int cantidadBloques) 
             throws EspacioInsuficienteException {
         
@@ -36,16 +39,18 @@ public class Disco {
         
         ListaEnlazada<Bloque> bloquesAsignados = new ListaEnlazada<>();
         ListaEnlazada<Integer> bloquesLibres = new ListaEnlazada<>();
-
+        
         for (int i = 0; i < tamanioTotal; i++) {
             if (bloques[i].estaLibre()) {
                 bloquesLibres.agregarAlFinal(i);
             }
         }
         
+        // Seleccionar bloques completamente al azar
         Bloque bloqueAnterior = null;
         
         for (int i = 0; i < cantidadBloques; i++) {
+            // Elegir indice aleatorio de bloques libres restantes
             int indiceAleatorio = random.nextInt(bloquesLibres.getTamanio());
             Integer numeroBloque = bloquesLibres.obtener(indiceAleatorio);
             
@@ -53,7 +58,8 @@ public class Disco {
                 Bloque bloque = bloques[numeroBloque];
                 bloque.ocupar(archivo);
                 bloquesAsignados.agregarAlFinal(bloque);
-
+                
+                // Encadenar con el bloque anterior
                 if (bloqueAnterior != null) {
                     bloqueAnterior.setSiguiente(bloque);
                 }
@@ -61,6 +67,7 @@ public class Disco {
                 bloqueAnterior = bloque;
                 bloquesOcupados++;
                 
+                // Eliminar este bloque de la lista de libres
                 bloquesLibres.eliminarEnPosicion(indiceAleatorio);
             }
         }
@@ -68,7 +75,7 @@ public class Disco {
         return bloquesAsignados;
     }
     
- 
+    
     public void liberarBloques(Archivo archivo) {
         ListaEnlazada<Bloque> bloquesArchivo = archivo.getBloques();
         
@@ -81,7 +88,7 @@ public class Disco {
         }
     }
     
- 
+
     public Bloque obtenerBloque(int numeroBloque) {
         if (numeroBloque >= 0 && numeroBloque < tamanioTotal) {
             return bloques[numeroBloque];
@@ -89,17 +96,17 @@ public class Disco {
         return null;
     }
     
-
+  
     public int getBloquesLibres() {
         return tamanioTotal - bloquesOcupados;
     }
     
-
+  
     public double getPorcentajeUso() {
         return (double) bloquesOcupados / tamanioTotal * 100;
     }
     
-   
+
     public boolean hayEspacioDisponible(int cantidadBloques) {
         return getBloquesLibres() >= cantidadBloques;
     }
@@ -114,18 +121,17 @@ public class Disco {
         }
         return ocupados;
     }
-
+    
+ 
     public void desfragmentar() {
-
         ListaEnlazada<Bloque> ocupados = obtenerBloquesOcupados();
-
+        
         for (int i = 0; i < tamanioTotal; i++) {
             if (bloques[i].estaOcupado()) {
                 bloques[i].liberar();
             }
         }
         
-        // Reasignar en orden
         int posicion = 0;
         for (int i = 0; i < ocupados.getTamanio(); i++) {
             Bloque bloqueOriginal = ocupados.obtener(i);
@@ -160,6 +166,7 @@ public class Disco {
         }
     }
     
+
     public String obtenerEstadisticas() {
         StringBuilder sb = new StringBuilder();
         sb.append("=== ESTADÍSTICAS DEL DISCO ===\n");

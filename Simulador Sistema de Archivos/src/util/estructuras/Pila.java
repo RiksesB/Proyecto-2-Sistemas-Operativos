@@ -3,7 +3,7 @@ package util.estructuras;
 public class Pila<T> {
     private Nodo<T> tope;
     private int tamanio;
-
+    
     public Pila() {
         this.tope = null;
         this.tamanio = 0;
@@ -12,17 +12,18 @@ public class Pila<T> {
     public boolean estaVacia() {
         return tope == null;
     }
-
+ 
     public int getTamanio() {
         return tamanio;
     }
-
+    
     public void apilar(T dato) {
         Nodo<T> nuevoNodo = new Nodo<>(dato);
         nuevoNodo.setSiguiente(tope);
         tope = nuevoNodo;
         tamanio++;
     }
+    
 
     public T desapilar() {
         if (estaVacia()) {
@@ -34,14 +35,15 @@ public class Pila<T> {
         tamanio--;
         return dato;
     }
-
+    
+ 
     public T verTope() {
         if (estaVacia()) {
             return null;
         }
         return tope.getDato();
     }
-
+    
     public boolean contiene(T dato) {
         Nodo<T> actual = tope;
         
@@ -54,7 +56,7 @@ public class Pila<T> {
         
         return false;
     }
-
+  
     public void limpiar() {
         tope = null;
         tamanio = 0;

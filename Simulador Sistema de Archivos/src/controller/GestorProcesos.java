@@ -10,7 +10,6 @@ import model.planificacion.TipoPlanificacion;
 import util.estructuras.Cola;
 import util.estructuras.ListaEnlazada;
 
-
 public class GestorProcesos {
     
     private ListaEnlazada<Proceso> listaProcesos;
@@ -28,7 +27,6 @@ public class GestorProcesos {
         this.gestorPlanificacion = new GestorPlanificacion(TipoPlanificacion.FIFO);
     }
     
-
     public Proceso crearProceso(String nombre, TipoOperacion operacion,
                                Usuario usuario, String archivoObjetivo) {
 
@@ -37,14 +35,13 @@ public class GestorProcesos {
         
         listaProcesos.agregarAlFinal(nuevoProceso);
         
-
         nuevoProceso.setEstado(EstadoProceso.LISTO);
         colaListos.encolar(nuevoProceso);
         
         return nuevoProceso;
     }
     
-
+  
     public Proceso ejecutarSiguienteProceso() {
         // Si no hay proceso en ejecución, ejecutar el siguiente de la cola
         if (procesoEnEjecucion == null && !colaListos.estaVacia()) {
@@ -57,28 +54,24 @@ public class GestorProcesos {
         return procesoEnEjecucion;
     }
     
-
+  
     public void generarSolicitudIO(int bloqueDestino) {
         if (procesoEnEjecucion != null) {
             procesoEnEjecucion.crearSolicitudIO(bloqueDestino);
             SolicitudIO solicitud = procesoEnEjecucion.getSolicitudIO();
             
-
             colaSolicitudesIO.encolar(solicitud);
-
 
             procesoEnEjecucion.setEstado(EstadoProceso.BLOQUEADO);
             procesoEnEjecucion = null;
         }
     }
-    
 
     public ListaEnlazada<SolicitudIO> procesarSolicitudesIO(int posicionCabezal) {
         if (colaSolicitudesIO.estaVacia()) {
             return new ListaEnlazada<>();
         }
         
-
         Cola<SolicitudIO> copiaSOlicitudes = new Cola<>();
         util.estructuras.Nodo<SolicitudIO> actual = colaSolicitudesIO.getFrente();
         while (actual != null) {
@@ -86,7 +79,6 @@ public class GestorProcesos {
             actual = actual.getSiguiente();
         }
         
-
         ListaEnlazada<SolicitudIO> solicitudesOrdenadas = 
             gestorPlanificacion.planificar(copiaSOlicitudes, posicionCabezal);
         
@@ -97,11 +89,9 @@ public class GestorProcesos {
     
 
     public void completarSolicitudIO(SolicitudIO solicitud) {
-        // Buscar el proceso asociado a esta solicitud
         Proceso proceso = buscarProcesoPorPID(solicitud.getPid());
         
         if (proceso != null && proceso.getEstado() == EstadoProceso.BLOQUEADO) {
-            // Retornar el proceso a la cola de listos
             proceso.setEstado(EstadoProceso.LISTO);
             colaListos.encolar(proceso);
         }
@@ -114,7 +104,7 @@ public class GestorProcesos {
         }
     }
     
-
+ 
     public void terminarProceso(Proceso proceso) {
         if (proceso != null) {
             proceso.setEstado(EstadoProceso.TERMINADO);
@@ -125,6 +115,7 @@ public class GestorProcesos {
         }
     }
     
+
     public Proceso buscarProcesoPorPID(int pid) {
         for (int i = 0; i < listaProcesos.getTamanio(); i++) {
             Proceso proceso = listaProcesos.obtener(i);
@@ -154,6 +145,7 @@ public class GestorProcesos {
         gestorPlanificacion.cambiarPlanificador(tipo);
     }
     
+  
     public String obtenerEstadisticas() {
         StringBuilder sb = new StringBuilder();
         sb.append("=== ESTADÍSTICAS DE PROCESOS ===\n");
@@ -167,7 +159,7 @@ public class GestorProcesos {
         sb.append("Algoritmo de planificación: ").append(gestorPlanificacion.getNombreAlgoritmoActual()).append("\n");
         return sb.toString();
     }
-    
+ 
     public void limpiarProcesosTerminados() {
         ListaEnlazada<Proceso> nuevaLista = new ListaEnlazada<>();
         

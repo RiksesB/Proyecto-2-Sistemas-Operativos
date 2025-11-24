@@ -5,11 +5,6 @@ import util.estructuras.Cola;
 import util.estructuras.ListaEnlazada;
 import util.estructuras.Nodo;
 
-/**
- * Implementación del algoritmo C-SCAN (Circular SCAN)
- * El cabezal se mueve en una dirección atendiendo solicitudes,
- * al llegar al final vuelve al inicio sin atender y repite
- */
 public class PlanificadorCSCAN implements PlanificadorDisco {
     
     @Override
@@ -41,9 +36,7 @@ public class PlanificadorCSCAN implements PlanificadorDisco {
         return resultado;
     }
     
-    /**
-     * Ordena una lista de solicitudes por número de bloque
-     */
+
     private void ordenarPorBloque(ListaEnlazada<SolicitudIO> lista, boolean ascendente) {
         int n = lista.getTamanio();
         for (int i = 0; i < n - 1; i++) {
@@ -67,9 +60,7 @@ public class PlanificadorCSCAN implements PlanificadorDisco {
         }
     }
     
-    /**
-     * Copia elementos de una lista a otra
-     */
+
     private void copiarLista(ListaEnlazada<SolicitudIO> origen, ListaEnlazada<SolicitudIO> destino) {
         for (int i = 0; i < origen.getTamanio(); i++) {
             SolicitudIO solicitud = origen.obtener(i);
@@ -87,7 +78,7 @@ public class PlanificadorCSCAN implements PlanificadorDisco {
     @Override
     public String getDescripcion() {
         return "Circular SCAN - Similar a SCAN pero al llegar al final vuelve al inicio " +
-               "sin atender solicitudes, tratando el disco como circular. Más uniforme que SCAN.";
+               "sin atender solicitudes.";
     }
     
     @Override

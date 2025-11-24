@@ -12,7 +12,7 @@ public class SistemaArchivos {
     private Disco disco;
     private Usuario usuarioActual;
     private ListaEnlazada<Usuario> usuarios;
-    private final Cola<Proceso> colaProcesos;;
+    private Cola<Proceso> colaProcesos;
     private int procesoIdCounter;
     
 
@@ -22,7 +22,8 @@ public class SistemaArchivos {
         this.usuarios = new ListaEnlazada<>();
         this.colaProcesos = new Cola<>();
         this.procesoIdCounter = 1;
-     
+        
+        // Crear usuario administrador por defecto
         Usuario admin = new Usuario("admin", TipoUsuario.ADMINISTRADOR);
         usuarios.agregarAlFinal(admin);
         this.usuarioActual = admin;
@@ -33,39 +34,36 @@ public class SistemaArchivos {
         this.usuarioActual = usuario;
     }
     
-    /**
-     * Agrega un nuevo usuario al sistema
-     */
+ 
     public void agregarUsuario(Usuario usuario) {
         usuarios.agregarAlFinal(usuario);
     }
     
-    /**
-     * nuevo ID para un proceso
-     */
+
     public int generarProcesoId() {
         return procesoIdCounter++;
     }
-
+    
     public void encolarProceso(Proceso proceso) {
         colaProcesos.encolar(proceso);
     }
     
-
+ 
     public Proceso desencolarProceso() {
         return colaProcesos.desencolar();
     }
     
+ 
     public Proceso verProcesoActual() {
         return colaProcesos.verFrente();
     }
     
- 
+
     public ListaEnlazada<Usuario> getUsuarios() {
         return usuarios;
     }
     
-
+    // Getters y Setters
     public Directorio getRaiz() {
         return raiz;
     }

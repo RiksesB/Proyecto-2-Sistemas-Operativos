@@ -1,6 +1,5 @@
 package model.planificacion;
 
-
 public enum TipoPlanificacion {
     FIFO("FIFO - First In First Out"),
     SSTF("SSTF - Shortest Seek Time First"),

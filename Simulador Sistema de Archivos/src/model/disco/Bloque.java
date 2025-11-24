@@ -9,7 +9,6 @@ public class Bloque {
     private Bloque siguiente; 
     private Archivo archivoPropietario;
     
-   
     public Bloque(int numeroBloque) {
         this.numeroBloque = numeroBloque;
         this.estado = EstadoBloque.LIBRE;
@@ -18,11 +17,13 @@ public class Bloque {
         this.archivoPropietario = null;
     }
     
+
     public void ocupar(Archivo archivo) {
         this.estado = EstadoBloque.OCUPADO;
         this.archivoPropietario = archivo;
     }
-
+    
+  
     public void liberar() {
         this.estado = EstadoBloque.LIBRE;
         this.datos = "";
@@ -30,14 +31,16 @@ public class Bloque {
         this.archivoPropietario = null;
     }
     
+
     public boolean estaLibre() {
         return estado == EstadoBloque.LIBRE;
     }
-    
+
     public boolean estaOcupado() {
         return estado == EstadoBloque.OCUPADO;
     }
     
+    // Getters y Setters
     public int getNumeroBloque() {
         return numeroBloque;
     }

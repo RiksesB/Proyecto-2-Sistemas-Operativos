@@ -1,4 +1,3 @@
-
 package view;
 
 import controller.ControladorPrincipal;
@@ -9,9 +8,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
-/**
- *  crear un nuevo archivo
- */
+
 public class DialogoCrearArchivo extends JDialog {
     
     private ControladorPrincipal controlador;
@@ -25,7 +22,7 @@ public class DialogoCrearArchivo extends JDialog {
     private JButton btnCancelar;
     private JLabel lblInfo;
     
-
+   
     public DialogoCrearArchivo(Frame parent, ControladorPrincipal controlador, 
                               Directorio directorioDestino) {
         super(parent, "Crear Nuevo Archivo", true);
@@ -42,7 +39,7 @@ public class DialogoCrearArchivo extends JDialog {
         setLayout(new BorderLayout(10, 10));
         getContentPane().setBackground(new Color(43, 43, 43));
         
-
+        // Panel central con formulario
         JPanel panelFormulario = new JPanel(new GridBagLayout());
         panelFormulario.setBackground(new Color(43, 43, 43));
         panelFormulario.setBorder(BorderFactory.createEmptyBorder(20, 20, 10, 20));
@@ -51,7 +48,7 @@ public class DialogoCrearArchivo extends JDialog {
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.insets = new Insets(5, 5, 5, 5);
         
-
+        // Etiqueta y campo de nombre
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.weightx = 0.3;
@@ -65,7 +62,7 @@ public class DialogoCrearArchivo extends JDialog {
         txtNombre.setFont(new Font("Arial", Font.PLAIN, 12));
         panelFormulario.add(txtNombre, gbc);
         
-
+        // Etiqueta y spinner de tamaño
         gbc.gridx = 0;
         gbc.gridy = 1;
         gbc.weightx = 0.3;
@@ -75,12 +72,12 @@ public class DialogoCrearArchivo extends JDialog {
         
         gbc.gridx = 1;
         gbc.weightx = 0.7;
-        SpinnerNumberModel spinnerModel = new SpinnerNumberModel(1, 1, 100, 1);
+        SpinnerNumberModel spinnerModel = new SpinnerNumberModel(1, 1, 200, 1);
         spinnerTamanio = new JSpinner(spinnerModel);
         spinnerTamanio.setFont(new Font("Arial", Font.PLAIN, 12));
         panelFormulario.add(spinnerTamanio, gbc);
 
-
+        // Checkbox para usar simulador
         gbc.gridx = 0;
         gbc.gridy = 2;
         gbc.gridwidth = 2;
@@ -93,7 +90,7 @@ public class DialogoCrearArchivo extends JDialog {
         chkUsarSimulador.setToolTipText("Permite visualizar el proceso de creación paso a paso");
         panelFormulario.add(chkUsarSimulador, gbc);
 
-
+        // Información del directorio destino
         gbc.gridx = 0;
         gbc.gridy = 3;
         gbc.gridwidth = 2;
@@ -104,7 +101,7 @@ public class DialogoCrearArchivo extends JDialog {
         
         add(panelFormulario, BorderLayout.CENTER);
         
-
+        // Panel inferior con información de espacio
         JPanel panelInfo = new JPanel(new FlowLayout(FlowLayout.LEFT));
         panelInfo.setBackground(new Color(50, 50, 50));
         panelInfo.setBorder(BorderFactory.createEmptyBorder(5, 20, 5, 20));
@@ -117,7 +114,7 @@ public class DialogoCrearArchivo extends JDialog {
         
         add(panelInfo, BorderLayout.NORTH);
         
-
+        // Panel de botones
         JPanel panelBotones = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 10));
         panelBotones.setBackground(new Color(43, 43, 43));
         panelBotones.setBorder(BorderFactory.createEmptyBorder(0, 20, 20, 20));
@@ -135,16 +132,19 @@ public class DialogoCrearArchivo extends JDialog {
         add(panelBotones, BorderLayout.SOUTH);
     }
     
-
+    /**
+     * Configura los eventos
+     */
     private void configurarEventos() {
-
+        // Botón crear
         btnCrear.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 crearArchivo();
             }
         });
-
+        
+        // Botón cancelar
         btnCancelar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -152,7 +152,7 @@ public class DialogoCrearArchivo extends JDialog {
             }
         });
         
-
+        // Enter en el campo de texto
         txtNombre.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -160,7 +160,7 @@ public class DialogoCrearArchivo extends JDialog {
             }
         });
         
-
+        // Actualizar info cuando cambia el tamaño
         spinnerTamanio.addChangeListener(e -> {
             int tamanio = (int) spinnerTamanio.getValue();
             int libres = controlador.getGestorDisco().getBloquesLibres();
@@ -176,7 +176,7 @@ public class DialogoCrearArchivo extends JDialog {
             }
         });
         
-
+        // Cerrar con ESC
         KeyStroke escape = KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0);
         getRootPane().registerKeyboardAction(
             new ActionListener() {
@@ -197,7 +197,7 @@ public class DialogoCrearArchivo extends JDialog {
         setLocationRelativeTo(getParent());
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         
-
+        // Focus inicial en el campo de nombre
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowOpened(WindowEvent e) {
@@ -206,11 +206,11 @@ public class DialogoCrearArchivo extends JDialog {
         });
     }
     
-
+ 
     private void crearArchivo() {
         String nombre = txtNombre.getText().trim();
         
-
+        // Validaciones
         if (nombre.isEmpty()) {
             JOptionPane.showMessageDialog(
                 this,
@@ -222,7 +222,7 @@ public class DialogoCrearArchivo extends JDialog {
             return;
         }
         
-
+        // Validar caracteres especiales
         if (!nombre.matches("[a-zA-Z0-9_\\-\\.]+")) {
             JOptionPane.showMessageDialog(
                 this,
@@ -234,7 +234,7 @@ public class DialogoCrearArchivo extends JDialog {
             return;
         }
 
-
+        // Verificar si ya existe un archivo con ese nombre
         if (directorioDestino.existeHijo(nombre)) {
             JOptionPane.showMessageDialog(
                 this,
@@ -247,7 +247,8 @@ public class DialogoCrearArchivo extends JDialog {
         }
 
         int tamanio = (int) spinnerTamanio.getValue();
-
+        
+        // Verificar espacio disponible
         if (!controlador.getGestorDisco().hayEspacioDisponible(tamanio)) {
             JOptionPane.showMessageDialog(
                 this,
@@ -257,8 +258,10 @@ public class DialogoCrearArchivo extends JDialog {
             );
             return;
         }
-
+        
+        // Intentar crear el archivo
         try {
+            // Mostrar progreso
             setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
             btnCrear.setEnabled(false);
             btnCancelar.setEnabled(false);
@@ -266,15 +269,18 @@ public class DialogoCrearArchivo extends JDialog {
             Archivo archivo;
 
             if (chkUsarSimulador.isSelected()) {
+                // Usar simulador paso a paso
                 archivo = controlador.crearArchivoConSimulacion(
                     nombre,
                     directorioDestino,
                     tamanio
                 );
 
-                creado = false; 
+                // Cerrar diálogo y dejar que el usuario controle el simulador
+                creado = false; // No marcar como creado aún
                 dispose();
 
+                // Mostrar mensaje informativo
                 JOptionPane.showMessageDialog(
                     getParent(),
                     "Simulación iniciada.\n\n" +
@@ -284,7 +290,6 @@ public class DialogoCrearArchivo extends JDialog {
                     "Simulador Activado",
                     JOptionPane.INFORMATION_MESSAGE
                 );
-
 
 
             } else {
@@ -337,6 +342,7 @@ public class DialogoCrearArchivo extends JDialog {
                 "Error",
                 JOptionPane.ERROR_MESSAGE
             );
+            // Solo imprimir stack trace para errores inesperados
             System.err.println("Error inesperado al crear archivo: " + ex.getClass().getName());
         } finally {
             setCursor(Cursor.getDefaultCursor());

@@ -3,20 +3,22 @@ package util.estructuras;
 public class ListaEnlazada<T> {
     private Nodo<T> cabeza;
     private int tamanio;
-   
+    
+ 
     public ListaEnlazada() {
         this.cabeza = null;
         this.tamanio = 0;
     }
-    
+
     public boolean estaVacia() {
         return cabeza == null;
     }
-    
+
     public int getTamanio() {
         return tamanio;
     }
     
+ 
     public void agregarAlInicio(T dato) {
         Nodo<T> nuevoNodo = new Nodo<>(dato);
         nuevoNodo.setSiguiente(cabeza);
@@ -24,6 +26,7 @@ public class ListaEnlazada<T> {
         tamanio++;
     }
     
+  
     public void agregarAlFinal(T dato) {
         Nodo<T> nuevoNodo = new Nodo<>(dato);
         
@@ -39,6 +42,7 @@ public class ListaEnlazada<T> {
         tamanio++;
     }
     
+
     public boolean agregarEnPosicion(T dato, int posicion) {
         if (posicion < 0 || posicion > tamanio) {
             return false;
@@ -62,6 +66,7 @@ public class ListaEnlazada<T> {
         return true;
     }
     
+  
     public T eliminarPrimero() {
         if (estaVacia()) {
             return null;
@@ -162,7 +167,7 @@ public class ListaEnlazada<T> {
         
         return actual.getDato();
     }
-    
+
     public T obtenerPrimero() {
         if (estaVacia()) {
             return null;
@@ -183,6 +188,7 @@ public class ListaEnlazada<T> {
         return actual.getDato();
     }
     
+
     public int buscarPosicion(T dato) {
         Nodo<T> actual = cabeza;
         int posicion = 0;
@@ -206,7 +212,7 @@ public class ListaEnlazada<T> {
     public Nodo<T> getCabeza() {
         return cabeza;
     }
-    
+
     public Object[] toArray() {
         Object[] array = new Object[tamanio];
         Nodo<T> actual = cabeza;

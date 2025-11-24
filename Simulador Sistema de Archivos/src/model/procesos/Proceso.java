@@ -2,20 +2,29 @@ package model.procesos;
 
 import model.sistema.Usuario;
 
+
 public class Proceso {
+    
     private int pid;
     private String nombre;
     private TipoOperacion operacion;
     private EstadoProceso estado;
     private String archivoObjetivo;
     private Usuario propietario;
+    
+    // Contador de programa 
     private int programCounter;
     private int numeroInstrucciones;
-    private int[] bloquesAsignados;
-    private SolicitudIO solicitudIO;
-    private String bloquesIO;
-    private int movimientoCabezal;
+
+    
+    private int[] bloquesAsignados; // Para crear
+    private SolicitudIO solicitudIO; // Solicitud de I/O actual del proceso
+    private String bloquesIO; // Cadena con los bloques de I/O accedidos
+    private int movimientoCabezal; // Total de movimiento del cabezal
+
     private static int contadorPID = 1;
+    
+   
     public Proceso(String nombre, TipoOperacion operacion, Usuario propietario, 
                    String archivoObjetivo, int numeroInstrucciones) {
         this.pid = contadorPID++;
@@ -31,34 +40,39 @@ public class Proceso {
         this.movimientoCabezal = 0;
     }
     
+
     public void ejecutarInstruccion() {
         if (programCounter < numeroInstrucciones) {
             programCounter++;
         }
     }
     
+
     public boolean haTerminado() {
         return programCounter >= numeroInstrucciones;
     }
     
+
     public double getPorcentajeCompletado() {
         if (numeroInstrucciones == 0) return 0;
         return (programCounter * 100.0) / numeroInstrucciones;
     }
     
+ 
     public void asignarBloqueEnInstruccionActual(int numeroBloque) {
         if (programCounter > 0 && programCounter <= numeroInstrucciones) {
             bloquesAsignados[programCounter - 1] = numeroBloque;
         }
     }
     
+
     public int[] getBloquesAsignados() {
         int[] resultado = new int[programCounter];
         System.arraycopy(bloquesAsignados, 0, resultado, 0, programCounter);
         return resultado;
     }
     
-
+    // Getters y Setters
     public int getPid() {
         return pid;
     }
@@ -95,10 +109,12 @@ public class Proceso {
         return numeroInstrucciones;
     }
 
+
     public void crearSolicitudIO(int bloqueDestino) {
         this.solicitudIO = new SolicitudIO(this.pid, this.operacion, bloqueDestino, this.archivoObjetivo);
     }
 
+ 
     public SolicitudIO getSolicitudIO() {
         return solicitudIO;
     }
@@ -123,6 +139,7 @@ public class Proceso {
         this.movimientoCabezal += movimiento;
     }
 
+ 
     public String obtenerInformacion() {
         StringBuilder sb = new StringBuilder();
         sb.append("===============================\n");
@@ -137,6 +154,7 @@ public class Proceso {
         sb.append("Program Counter: ").append(programCounter).append("/").append(numeroInstrucciones).append("\n");
         sb.append("Progreso: ").append(String.format("%.1f%%", getPorcentajeCompletado())).append("\n");
         
+        // Información de I/O
         if (bloquesIO != null && !bloquesIO.isEmpty()) {
             sb.append("\nOperaciones I/O:\n");
             sb.append("  Bloques accedidos: ").append(bloquesIO).append("\n");
@@ -157,6 +175,7 @@ public class Proceso {
                            pid, nombre, operacion, programCounter, numeroInstrucciones, estado);
     }
     
+
     public static void reiniciarContadorPID() {
         contadorPID = 1;
     }

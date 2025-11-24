@@ -1,6 +1,5 @@
 package model.disco;
 
-
 public enum EstadoBloque {
     LIBRE("Libre"),
     OCUPADO("Ocupado"),

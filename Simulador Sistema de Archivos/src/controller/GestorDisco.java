@@ -7,29 +7,24 @@ import model.disco.TablaAsignacion;
 import util.estructuras.ListaEnlazada;
 import util.excepciones.EspacioInsuficienteException;
 
-
 public class GestorDisco {
     
     private Disco disco;
     private TablaAsignacion tablaAsignacion;
     
-
     public GestorDisco(int tamanioDiscoEnBloques) {
         this.disco = new Disco(tamanioDiscoEnBloques);
         this.tablaAsignacion = new TablaAsignacion();
     }
     
-
     public GestorDisco(Disco disco) {
         this.disco = disco;
         this.tablaAsignacion = new TablaAsignacion();
     }
     
-
     public boolean asignarBloquesAArchivo(Archivo archivo) throws EspacioInsuficienteException {
         int cantidadBloques = archivo.getTamanioEnBloques();
         
-
         if (!disco.hayEspacioDisponible(cantidadBloques)) {
             throw new EspacioInsuficienteException(
                 "No hay suficiente espacio en el disco. Se necesitan " + cantidadBloques + 
@@ -37,10 +32,8 @@ public class GestorDisco {
             );
         }
         
-
         ListaEnlazada<Bloque> bloquesAsignados = disco.asignarBloques(archivo, cantidadBloques);
         
-
         for (int i = 0; i < bloquesAsignados.getTamanio(); i++) {
             Bloque bloque = bloquesAsignados.obtener(i);
             if (bloque != null) {
@@ -48,35 +41,27 @@ public class GestorDisco {
             }
         }
         
-
         return archivo.estaCompleto();
     }
     
-
     public void liberarBloquesDeArchivo(Archivo archivo) {
-
         tablaAsignacion.eliminarArchivo(archivo.getNombre());
         
-
         disco.liberarBloques(archivo);
         
-
         archivo.liberarBloques();
     }
     
-
     public void registrarArchivoEnTabla(Archivo archivo) {
         if (archivo.estaCompleto()) {
             tablaAsignacion.agregarArchivo(archivo);
         }
     }
     
-
     public boolean hayEspacioDisponible(int cantidadBloques) {
         return disco.hayEspacioDisponible(cantidadBloques);
     }
     
- 
     public String obtenerInformacionDisco() {
         StringBuilder sb = new StringBuilder();
         sb.append("=== INFORMACIÓN DEL DISCO ===\n");
@@ -88,7 +73,6 @@ public class GestorDisco {
         return sb.toString();
     }
     
-
     public boolean[] obtenerMapaBloques() {
         boolean[] mapa = new boolean[disco.getTamanioTotal()];
         Bloque[] bloques = disco.getBloques();
@@ -100,7 +84,6 @@ public class GestorDisco {
         return mapa;
     }
     
-
     public Archivo obtenerPropietarioBloque(int numeroBloque) {
         Bloque bloque = disco.obtenerBloque(numeroBloque);
         if (bloque != null && bloque.estaOcupado()) {
@@ -109,15 +92,10 @@ public class GestorDisco {
         return null;
     }
     
-    /**
-     * Desfragmenta el disco
-     */
     public void desfragmentar() {
         disco.desfragmentar();
-
     }
     
-    // Getters
     public Disco getDisco() {
         return disco;
     }

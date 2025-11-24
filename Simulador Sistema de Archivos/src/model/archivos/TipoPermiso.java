@@ -1,6 +1,5 @@
 package model.archivos;
 
-//¿qué permiso hay en cada archivo?
 public enum TipoPermiso {
     LECTURA("Lectura"),
     ESCRITURA("Escritura"),

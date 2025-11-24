@@ -1,5 +1,6 @@
 package model.procesos;
 
+
 public enum EstadoProceso {
     NUEVO("Nuevo"),
     LISTO("Listo"),

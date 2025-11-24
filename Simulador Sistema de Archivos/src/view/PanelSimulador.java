@@ -4,267 +4,305 @@ import controller.ControladorPrincipal;
 import controller.SimuladorIO;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
-/**
- * visualiza el simulador de I/O paso a paso
- */
-public class PanelSimulador extends JPanel {
-
+public class PanelSimulador extends JPanel implements SimuladorIO.ObservadorSimulacion {
+    
     private ControladorPrincipal controlador;
-    private JTextArea textInfo;
-    private JProgressBar progressBar;
+    private SimuladorIO simulador;
+    
+    private JTextArea areaEstado;
+    private JTextArea areaLog;
     private JButton btnAvanzar;
-    private JButton btnPausar;
+    private JButton btnAuto;
     private JButton btnCompletar;
     private JButton btnReiniciar;
     private JSlider sliderVelocidad;
-    private JLabel lblEstado;
-    private JLabel lblCabezal;
-    private Timer timerAutoAvance;
-    private boolean modoAutomatico;
-
+    private JLabel lblVelocidad;
+    private JProgressBar barraProgreso;
+    
     public PanelSimulador(ControladorPrincipal controlador) {
         this.controlador = controlador;
-        this.modoAutomatico = false;
-        inicializarComponentes();
-        configurarEventos();
-    }
-
-    private void inicializarComponentes() {
-        setLayout(new BorderLayout(10, 10));
-        setBackground(new Color(43, 43, 43));
-        setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-
-   
-        JPanel panelEstado = new JPanel(new GridLayout(2, 1, 5, 5));
-        panelEstado.setBackground(new Color(50, 50, 50));
-        panelEstado.setBorder(BorderFactory.createTitledBorder(
-            BorderFactory.createLineBorder(Color.GRAY),
-            "Estado de la Simulación",
-            0, 0, new Font("Arial", Font.BOLD, 12), Color.WHITE
-        ));
-
-        lblEstado = new JLabel("Estado: Esperando...");
-        lblEstado.setForeground(Color.WHITE);
-        lblEstado.setFont(new Font("Monospaced", Font.PLAIN, 12));
-
-        lblCabezal = new JLabel("Posición Cabezal: 0");
-        lblCabezal.setForeground(Color.CYAN);
-        lblCabezal.setFont(new Font("Monospaced", Font.PLAIN, 12));
-
-        panelEstado.add(lblEstado);
-        panelEstado.add(lblCabezal);
-
-        add(panelEstado, BorderLayout.NORTH);
-
-     
-        textInfo = new JTextArea(12, 40);
-        textInfo.setEditable(false);
-        textInfo.setBackground(new Color(30, 30, 30));
-        textInfo.setForeground(Color.GREEN);
-        textInfo.setFont(new Font("Monospaced", Font.PLAIN, 11));
-        textInfo.setText("Simulador de I/O - Esperando operación...\n");
-
-        JScrollPane scroll = new JScrollPane(textInfo);
-        scroll.setBorder(BorderFactory.createLineBorder(Color.GRAY));
-        add(scroll, BorderLayout.CENTER);
-
+        this.simulador = controlador.getSimuladorIO();
+        this.simulador.agregarObservador(this);
         
-        JPanel panelControles = new JPanel(new BorderLayout(5, 5));
-        panelControles.setBackground(new Color(50, 50, 50));
-
-     
-        progressBar = new JProgressBar(0, 100);
-        progressBar.setStringPainted(true);
-        progressBar.setString("0%");
-        progressBar.setForeground(new Color(100, 200, 100));
-        panelControles.add(progressBar, BorderLayout.NORTH);
-
-      
-        JPanel panelBotones = new JPanel(new FlowLayout(FlowLayout.CENTER, 5, 5));
-        panelBotones.setBackground(new Color(50, 50, 50));
-
-        btnAvanzar = new JButton("▶ Avanzar Ciclo");
+        setLayout(new BorderLayout(10, 10));
+        setBorder(BorderFactory.createTitledBorder(
+            BorderFactory.createLineBorder(new Color(100, 100, 100)),
+            "⚙️ Simulador de I/O",
+            0, 0, new Font("Segoe UI", Font.BOLD, 13), Color.WHITE
+        ));
+        setBackground(new Color(45, 45, 45));
+        
+        inicializarComponentes();
+    }
+    
+    private void inicializarComponentes() {
+        JPanel panelEstado = crearPanelEstado();
+        add(panelEstado, BorderLayout.NORTH);
+        
+        JPanel panelLog = crearPanelLog();
+        add(panelLog, BorderLayout.CENTER);
+        
+        JPanel panelControl = crearPanelControl();
+        add(panelControl, BorderLayout.SOUTH);
+    }
+    
+    private JPanel crearPanelEstado() {
+        JPanel panel = new JPanel(new BorderLayout(5, 5));
+        panel.setBackground(new Color(45, 45, 45));
+        panel.setBorder(BorderFactory.createTitledBorder(
+            BorderFactory.createLineBorder(new Color(80, 80, 80)),
+            "Estado de la Simulación",
+            0, 0, new Font("Segoe UI", Font.BOLD, 11), Color.WHITE
+        ));
+        
+        areaEstado = new JTextArea(3, 40);
+        areaEstado.setEditable(false);
+        areaEstado.setBackground(new Color(30, 30, 30));
+        areaEstado.setForeground(new Color(0, 255, 0));
+        areaEstado.setFont(new Font("Consolas", Font.PLAIN, 12));
+        areaEstado.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        
+        barraProgreso = new JProgressBar(0, 100);
+        barraProgreso.setStringPainted(true);
+        barraProgreso.setForeground(new Color(76, 175, 80));
+        barraProgreso.setBackground(new Color(60, 60, 60));
+        barraProgreso.setFont(new Font("Segoe UI", Font.BOLD, 11));
+        
+        panel.add(new JScrollPane(areaEstado), BorderLayout.CENTER);
+        panel.add(barraProgreso, BorderLayout.SOUTH);
+        
+        return panel;
+    }
+    
+    private JPanel crearPanelLog() {
+        JPanel panel = new JPanel(new BorderLayout());
+        panel.setBackground(new Color(45, 45, 45));
+        panel.setBorder(BorderFactory.createTitledBorder(
+            BorderFactory.createLineBorder(new Color(80, 80, 80)),
+            "Log de Operaciones",
+            0, 0, new Font("Segoe UI", Font.BOLD, 11), Color.WHITE
+        ));
+        
+        areaLog = new JTextArea(8, 40);
+        areaLog.setEditable(false);
+        areaLog.setBackground(new Color(30, 30, 30));
+        areaLog.setForeground(new Color(0, 200, 255));
+        areaLog.setFont(new Font("Consolas", Font.PLAIN, 10));
+        areaLog.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        
+        JScrollPane scrollPane = new JScrollPane(areaLog);
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        scrollPane.setBorder(null);
+        
+        panel.add(scrollPane, BorderLayout.CENTER);
+        
+        return panel;
+    }
+    
+    private JPanel crearPanelControl() {
+        JPanel panel = new JPanel(new BorderLayout(10, 10));
+        panel.setBackground(new Color(45, 45, 45));
+        
+        JPanel panelBotones = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 5));
+        panelBotones.setBackground(new Color(45, 45, 45));
+        
+        btnAvanzar = new JButton("▶ Avanzar");
+        btnAvanzar.setBackground(new Color(33, 150, 243));
+        btnAvanzar.setForeground(Color.WHITE);
         btnAvanzar.setFocusPainted(false);
-        btnAvanzar.setToolTipText("Avanza un ciclo de la simulación");
-        panelBotones.add(btnAvanzar);
-
-        btnPausar = new JButton("⏸ Auto");
-        btnPausar.setFocusPainted(false);
-        btnPausar.setToolTipText("Ejecuta automáticamente");
-        panelBotones.add(btnPausar);
-
-        btnCompletar = new JButton("⏭ Completar");
-        btnCompletar.setFocusPainted(false);
-        btnCompletar.setToolTipText("Completa toda la simulación");
-        panelBotones.add(btnCompletar);
-
-        btnReiniciar = new JButton("🔄 Reiniciar");
-        btnReiniciar.setFocusPainted(false);
-        btnReiniciar.setToolTipText("Reinicia el simulador");
-        panelBotones.add(btnReiniciar);
-
-        panelControles.add(panelBotones, BorderLayout.CENTER);
-
-    
-        JPanel panelVelocidad = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 5));
-        panelVelocidad.setBackground(new Color(50, 50, 50));
-
-        JLabel lblVelocidad = new JLabel("Velocidad:");
-        lblVelocidad.setForeground(Color.WHITE);
-        panelVelocidad.add(lblVelocidad);
-
-        sliderVelocidad = new JSlider(JSlider.HORIZONTAL, 50, 2000, 500);
-        sliderVelocidad.setMajorTickSpacing(500);
-        sliderVelocidad.setPaintTicks(true);
-        sliderVelocidad.setPreferredSize(new Dimension(200, 40));
-        sliderVelocidad.setBackground(new Color(50, 50, 50));
-        sliderVelocidad.setForeground(Color.WHITE);
-        panelVelocidad.add(sliderVelocidad);
-
-        JLabel lblMs = new JLabel("ms");
-        lblMs.setForeground(Color.LIGHT_GRAY);
-        panelVelocidad.add(lblMs);
-
-        panelControles.add(panelVelocidad, BorderLayout.SOUTH);
-
-        add(panelControles, BorderLayout.SOUTH);
-
-       
-        timerAutoAvance = new Timer(500, new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (modoAutomatico) {
-                    avanzarCiclo();
-                }
-            }
-        });
-    }
-
-    private void configurarEventos() {
-  
+        btnAvanzar.setBorderPainted(false);
+        btnAvanzar.setFont(new Font("Segoe UI", Font.BOLD, 11));
+        btnAvanzar.setCursor(new Cursor(Cursor.HAND_CURSOR));
         btnAvanzar.addActionListener(e -> avanzarCiclo());
-
-      
-        btnPausar.addActionListener(e -> {
-            modoAutomatico = !modoAutomatico;
-            if (modoAutomatico) {
-                btnPausar.setText("⏸ Pausar");
-                timerAutoAvance.start();
-            } else {
-                btnPausar.setText("▶ Auto");
-                timerAutoAvance.stop();
-            }
-        });
-
-   
-        btnCompletar.addActionListener(e -> {
-            modoAutomatico = false;
-            timerAutoAvance.stop();
-            btnPausar.setText("▶ Auto");
-
-            model.archivos.Archivo archivo = controlador.getSimuladorIO().getArchivoActual();
-            model.archivos.Directorio directorio = controlador.getSimuladorIO().getDirectorioActual();
-
-            if (archivo != null && directorio != null) {
-                try {
-                  
-                    controlador.completarSimulacion(archivo, directorio);
-
-                 
-                    Window window = SwingUtilities.getWindowAncestor(this);
-                    if (window instanceof VentanaPrincipal) {
-                        ((VentanaPrincipal) window).actualizarTodo();
-                    }
-
-                    JOptionPane.showMessageDialog(
-                        this,
-                        "Archivo '" + archivo.getNombre() + "' creado exitosamente\n" +
-                        "Tamaño: " + archivo.getTamanioEnBloques() + " bloques",
-                        "Simulación Completada",
-                        JOptionPane.INFORMATION_MESSAGE
-                    );
-                } catch (util.excepciones.EspacioInsuficienteException ex) {
-                    JOptionPane.showMessageDialog(
-                        this,
-                        "Error: " + ex.getMessage(),
-                        "Error al completar",
-                        JOptionPane.ERROR_MESSAGE
-                    );
-                }
-            } else {
-         
-                while (controlador.avanzarSimulacion()) {
-                    actualizar();
-                    try {
-                        Thread.sleep(50);
-                    } catch (InterruptedException ex) {
-                        Thread.currentThread().interrupt();
-                    }
-                }
-            }
-
-            actualizar();
-        });
-
-     
-        btnReiniciar.addActionListener(e -> {
-            modoAutomatico = false;
-            timerAutoAvance.stop();
-            btnPausar.setText("▶ Auto");
-            controlador.getSimuladorIO().reiniciar();
-            actualizar();
-        });
-
-    
+        
+        btnAuto = new JButton("⏯ Auto");
+        btnAuto.setBackground(new Color(76, 175, 80));
+        btnAuto.setForeground(Color.WHITE);
+        btnAuto.setFocusPainted(false);
+        btnAuto.setBorderPainted(false);
+        btnAuto.setFont(new Font("Segoe UI", Font.BOLD, 11));
+        btnAuto.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        btnAuto.addActionListener(e -> toggleAuto());
+        
+        btnCompletar = new JButton("⏭ Completar");
+        btnCompletar.setBackground(new Color(255, 152, 0));
+        btnCompletar.setForeground(Color.WHITE);
+        btnCompletar.setFocusPainted(false);
+        btnCompletar.setBorderPainted(false);
+        btnCompletar.setFont(new Font("Segoe UI", Font.BOLD, 11));
+        btnCompletar.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        btnCompletar.addActionListener(e -> completar());
+        
+        btnReiniciar = new JButton("🔄 Reiniciar");
+        btnReiniciar.setBackground(new Color(244, 67, 54));
+        btnReiniciar.setForeground(Color.WHITE);
+        btnReiniciar.setFocusPainted(false);
+        btnReiniciar.setBorderPainted(false);
+        btnReiniciar.setFont(new Font("Segoe UI", Font.BOLD, 11));
+        btnReiniciar.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        btnReiniciar.addActionListener(e -> reiniciar());
+        
+        panelBotones.add(btnAvanzar);
+        panelBotones.add(btnAuto);
+        panelBotones.add(btnCompletar);
+        panelBotones.add(btnReiniciar);
+        
+        JPanel panelVelocidad = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        panelVelocidad.setBackground(new Color(45, 45, 45));
+        
+        lblVelocidad = new JLabel("Velocidad: 500 ms");
+        lblVelocidad.setForeground(Color.WHITE);
+        lblVelocidad.setFont(new Font("Segoe UI", Font.PLAIN, 11));
+        
+        sliderVelocidad = new JSlider(100, 2000, 500);
+        sliderVelocidad.setInverted(true);
+        sliderVelocidad.setMajorTickSpacing(500);
+        sliderVelocidad.setMinorTickSpacing(100);
+        sliderVelocidad.setPaintTicks(true);
+        sliderVelocidad.setPaintLabels(false);
+        sliderVelocidad.setBackground(new Color(45, 45, 45));
+        sliderVelocidad.setForeground(Color.WHITE);
         sliderVelocidad.addChangeListener(e -> {
-            int velocidad = sliderVelocidad.getValue();
-            controlador.getSimuladorIO().setVelocidadSimulacion(velocidad);
-            timerAutoAvance.setDelay(velocidad);
+            int valor = sliderVelocidad.getValue();
+            simulador.setVelocidadSimulacion(valor);
+            lblVelocidad.setText("Velocidad: " + valor + " ms");
+        });
+        
+        panelVelocidad.add(lblVelocidad);
+        panelVelocidad.add(sliderVelocidad);
+        
+        panel.add(panelBotones, BorderLayout.NORTH);
+        panel.add(panelVelocidad, BorderLayout.SOUTH);
+        
+        return panel;
+    }
+    
+    private void avanzarCiclo() {
+        boolean continuar = simulador.avanzarCiclo();
+        if (!continuar) {
+            agregarLog("✓ Simulación completada");
+        }
+    }
+    
+    private void toggleAuto() {
+        if (simulador.isAutoActivo()) {
+            simulador.detenerAuto();
+            btnAuto.setText("⏯ Auto");
+            btnAuto.setBackground(new Color(76, 175, 80));
+            agregarLog("⏸ Modo automático pausado");
+        } else {
+            simulador.iniciarAuto();
+            btnAuto.setText("⏸ Pausar");
+            btnAuto.setBackground(new Color(255, 193, 7));
+            agregarLog("⏯ Modo automático activado");
+        }
+    }
+    
+    private void completar() {
+        try {
+            simulador.completar();
+            
+            if (simulador.getArchivoActual() != null && simulador.getDirectorioActual() != null) {
+                controlador.completarSimulacion(
+                    simulador.getArchivoActual(),
+                    simulador.getDirectorioActual()
+                );
+                
+                Window window = SwingUtilities.getWindowAncestor(this);
+                if (window instanceof VentanaPrincipal) {
+                    ((VentanaPrincipal) window).actualizarTodo();
+                }
+            }
+            
+            btnAuto.setText("⏯ Auto");
+            btnAuto.setBackground(new Color(76, 175, 80));
+            agregarLog("⏭ Simulación completada instantáneamente");
+        } catch (Exception ex) {
+            agregarLog("❌ Error al completar: " + ex.getMessage());
+        }
+    }
+    
+    private void reiniciar() {
+        simulador.reiniciar();
+        btnAuto.setText("⏯ Auto");
+        btnAuto.setBackground(new Color(76, 175, 80));
+        areaLog.setText("");
+        agregarLog("🔄 Simulación reiniciada");
+    }
+    
+    @Override
+    public void onSimulacionActualizada() {
+        SwingUtilities.invokeLater(() -> {
+            actualizarEstado();
+            actualizarProgreso();
         });
     }
-
-  
-    private void avanzarCiclo() {
-        boolean continua = controlador.avanzarSimulacion();
-        actualizar();
-
-        if (!continua && modoAutomatico) {
-            modoAutomatico = false;
-            timerAutoAvance.stop();
-            btnPausar.setText("▶ Auto");
+    
+    private void actualizarEstado() {
+        StringBuilder estado = new StringBuilder();
+        
+        SimuladorIO.EstadoSimulacion estadoActual = simulador.getEstadoActual();
+        
+        if (estadoActual != SimuladorIO.EstadoSimulacion.ESPERANDO && 
+            estadoActual != SimuladorIO.EstadoSimulacion.COMPLETADO) {
+            
+            estado.append("Estado: ").append(estadoActual.getDescripcion()).append("\n");
+            estado.append("Posición Cabezal: ").append(simulador.getPosicionCabezalActual());
+            
+            if (estadoActual == SimuladorIO.EstadoSimulacion.MOVIENDO_CABEZAL) {
+                estado.append(" → ").append(simulador.getPosicionCabezalDestino());
+            }
+            
+            estado.append("\n");
+            
+            int indiceActual = simulador.getIndiceSolicitudActual();
+            estado.append("Progreso: ").append(indiceActual).append(" operaciones procesadas");
+            
+        } else if (estadoActual == SimuladorIO.EstadoSimulacion.COMPLETADO) {
+            estado.append("Estado: ✓ Operación completada\n");
+            estado.append("Posición Final Cabezal: ").append(simulador.getPosicionCabezalActual());
+        } else {
+            estado.append("Estado: Esperando próxima operación\n");
+            estado.append("Posición Cabezal: ").append(simulador.getPosicionCabezalActual());
+        }
+        
+        areaEstado.setText(estado.toString());
+    }
+    
+    private void actualizarProgreso() {
+        double progreso = simulador.obtenerProgreso();
+        int progresoInt = (int)(progreso * 100);
+        barraProgreso.setValue(progresoInt);
+        barraProgreso.setString(progresoInt + "%");
+        
+        SimuladorIO.EstadoSimulacion estadoActual = simulador.getEstadoActual();
+        if (estadoActual == SimuladorIO.EstadoSimulacion.ASIGNANDO_BLOQUE) {
+            int bloqueActual = simulador.getPosicionCabezalActual();
+            agregarLog(String.format("→ Bloque %d procesado", bloqueActual));
         }
     }
-
-
+    
+    private void agregarLog(String mensaje) {
+        areaLog.append(mensaje + "\n");
+        areaLog.setCaretPosition(areaLog.getDocument().getLength());
+    }
+    
     public void actualizar() {
-        SimuladorIO simulador = controlador.getSimuladorIO();
-
-   
-        lblEstado.setText("Estado: " + simulador.getEstadoActual().getDescripcion());
-        lblCabezal.setText(String.format("Posición Cabezal: %d → %d",
-            simulador.getPosicionCabezalActual(),
-            simulador.getPosicionCabezalDestino()));
-
-        int progreso = (int) (simulador.obtenerProgreso() * 100);
-        progressBar.setValue(progreso);
-        progressBar.setString(progreso + "%");
-
-      
-        textInfo.setText(simulador.obtenerInformacionCiclo());
-
-        if (simulador.getProcesoActual() != null) {
-            textInfo.append("\n");
-            textInfo.append(controlador.getGestorProcesos().obtenerEstadisticas());
-        }
+        onSimulacionActualizada();
     }
-
+    
+    public void limpiar() {
+        areaEstado.setText("");
+        areaLog.setText("");
+        barraProgreso.setValue(0);
+        btnAuto.setText("⏯ Auto");
+        btnAuto.setBackground(new Color(76, 175, 80));
+    }
+    
     public void detener() {
-        if (timerAutoAvance != null && timerAutoAvance.isRunning()) {
-            timerAutoAvance.stop();
-        }
-        modoAutomatico = false;
+        simulador.detenerAuto();
+        btnAuto.setText("⏯ Auto");
+        btnAuto.setBackground(new Color(76, 175, 80));
     }
 }

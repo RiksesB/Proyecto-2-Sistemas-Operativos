@@ -24,7 +24,7 @@ public class PanelArbolArchivos extends JPanel {
     private JButton btnEliminar;
     private JButton btnRenombrar;
     
-  
+ 
     public PanelArbolArchivos(ControladorPrincipal controlador) {
         this.controlador = controlador;
         inicializarComponentes();
@@ -37,7 +37,7 @@ public class PanelArbolArchivos extends JPanel {
         setLayout(new BorderLayout(5, 5));
         setBackground(new Color(43, 43, 43));
         
-
+        // Crear árbol
         rootNode = new DefaultMutableTreeNode("root");
         treeModel = new DefaultTreeModel(rootNode);
         tree = new JTree(treeModel);
@@ -49,7 +49,7 @@ public class PanelArbolArchivos extends JPanel {
         scrollTree.setBorder(BorderFactory.createEmptyBorder());
         add(scrollTree, BorderLayout.CENTER);
         
-
+        // Panel de botones
         JPanel panelBotones = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 5));
         panelBotones.setBackground(new Color(50, 50, 50));
         
@@ -74,7 +74,8 @@ public class PanelArbolArchivos extends JPanel {
         panelBotones.add(btnEliminar);
         
         add(panelBotones, BorderLayout.NORTH);
-
+        
+        // Panel de información
         txtInfo = new JTextArea(5, 20);
         txtInfo.setEditable(false);
         txtInfo.setBackground(new Color(50, 50, 50));
@@ -92,9 +93,9 @@ public class PanelArbolArchivos extends JPanel {
         add(scrollInfo, BorderLayout.SOUTH);
     }
     
-
+ 
     private void configurarEventos() {
-
+        // Selección en el árbol
         tree.addTreeSelectionListener(e -> {
             DefaultMutableTreeNode selectedNode = 
                 (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
@@ -105,19 +106,19 @@ public class PanelArbolArchivos extends JPanel {
             }
         });
         
-
+        // Crear archivo
         btnCrearArchivo.addActionListener(e -> crearArchivo());
         
-
+        // Crear directorio
         btnCrearDirectorio.addActionListener(e -> crearDirectorio());
         
-
+        // Renombrar
         btnRenombrar.addActionListener(e -> renombrar());
         
-
+        // Eliminar
         btnEliminar.addActionListener(e -> eliminar());
         
-
+        // Doble clic en el árbol
         tree.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -143,7 +144,6 @@ public class PanelArbolArchivos extends JPanel {
         tree.expandRow(0);
     }
     
-
     private void agregarNodosRecursivo(DefaultMutableTreeNode parentNode, Directorio directorio) {
         ListaEnlazada<NodoArbol> hijos = directorio.getHijos();
         
@@ -160,7 +160,7 @@ public class PanelArbolArchivos extends JPanel {
         }
     }
     
-
+    
     private void crearArchivo() {
         DefaultMutableTreeNode selectedNode = 
             (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
@@ -196,7 +196,7 @@ public class PanelArbolArchivos extends JPanel {
         }
     }
     
-  
+
     private void crearDirectorio() {
         DefaultMutableTreeNode selectedNode = 
             (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
@@ -251,7 +251,7 @@ public class PanelArbolArchivos extends JPanel {
             }
         }
     }
-
+    
     private void renombrar() {
         DefaultMutableTreeNode selectedNode = 
             (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
@@ -273,16 +273,14 @@ public class PanelArbolArchivos extends JPanel {
         if (nuevoNombre != null && !nuevoNombre.trim().isEmpty()) {
             try {
                 if (nodo.esDirectorio()) {
-                    controlador.getGestorArchivos().actualizarNombreDirectorio(
+                    controlador.renombrarDirectorioConProceso(
                         (Directorio) nodo,
-                        nuevoNombre.trim(),
-                        controlador.getSistema().getUsuarioActual()
+                        nuevoNombre.trim()
                     );
                 } else {
-                    controlador.getGestorArchivos().actualizarNombreArchivo(
+                    controlador.renombrarArchivoConProceso(
                         (Archivo) nodo,
-                        nuevoNombre.trim(),
-                        controlador.getSistema().getUsuarioActual()
+                        nuevoNombre.trim()
                     );
                 }
                 
@@ -375,7 +373,7 @@ public class PanelArbolArchivos extends JPanel {
         }
     }
     
-
+  
     private void mostrarInformacion(NodoArbol nodo) {
         if (nodo.esDirectorio()) {
             txtInfo.setText(((Directorio) nodo).obtenerInformacion());
@@ -384,10 +382,10 @@ public class PanelArbolArchivos extends JPanel {
         }
     }
     
- 
+
     private void mostrarDetallesArchivo(Archivo archivo) {
         try {
-    
+            // Leer el archivo usando el controlador con proceso de I/O
             String info = controlador.leerArchivoConProceso(archivo);
             
             JTextArea textArea = new JTextArea(info);
@@ -405,7 +403,8 @@ public class PanelArbolArchivos extends JPanel {
                 "Detalles: " + archivo.getNombre(),
                 JOptionPane.INFORMATION_MESSAGE
             );
-        
+            
+            // Actualizar para reflejar el proceso de lectura
             notificarCambio();
             
         } catch (PermisosDenegadosException ex) {
@@ -416,7 +415,7 @@ public class PanelArbolArchivos extends JPanel {
                 JOptionPane.ERROR_MESSAGE
             );
         } catch (Exception ex) {
-      
+            // Si falla el proceso, mostrar la información básica
             JTextArea textArea = new JTextArea(archivo.obtenerInformacion());
             textArea.setEditable(false);
             textArea.setFont(new Font("Monospaced", Font.PLAIN, 12));
@@ -442,6 +441,7 @@ public class PanelArbolArchivos extends JPanel {
             ((VentanaPrincipal) window).actualizarTodo();
         }
     }
+    
 
     public void actualizar() {
         construirArbol();

@@ -26,15 +26,14 @@ public class Directorio extends NodoArbol {
         }
         return tamanioTotal;
     }
-    
-//agregar hijo al directorio
+ 
     public void agregarHijo(NodoArbol nodo) {
         hijos.agregarAlFinal(nodo);
         nodo.setPadre(this);
         actualizarFechaModificacion();
     }
     
-//eliminar hijo del directorio
+ 
     public boolean eliminarHijo(NodoArbol nodo) {
         boolean eliminado = hijos.eliminar(nodo);
         if (eliminado) {
@@ -43,7 +42,7 @@ public class Directorio extends NodoArbol {
         return eliminado;
     }
     
-//buscar x nombre
+    
     public NodoArbol buscarHijo(String nombre) {
         for (int i = 0; i < hijos.getTamanio(); i++) {
             NodoArbol hijo = hijos.obtener(i);
@@ -54,10 +53,12 @@ public class Directorio extends NodoArbol {
         return null;
     }
     
+  
     public boolean existeHijo(String nombre) {
         return buscarHijo(nombre) != null;
     }
-
+    
+ 
     public int contarArchivos() {
         int contador = 0;
         for (int i = 0; i < hijos.getTamanio(); i++) {
@@ -68,6 +69,7 @@ public class Directorio extends NodoArbol {
         }
         return contador;
     }
+    
  
     public int contarDirectorios() {
         int contador = 0;
@@ -79,7 +81,8 @@ public class Directorio extends NodoArbol {
         }
         return contador;
     }
-   
+    
+ 
     public ListaEnlazada<Archivo> obtenerArchivos() {
         ListaEnlazada<Archivo> archivos = new ListaEnlazada<>();
         for (int i = 0; i < hijos.getTamanio(); i++) {
@@ -90,7 +93,8 @@ public class Directorio extends NodoArbol {
         }
         return archivos;
     }
-
+    
+ 
     public ListaEnlazada<Directorio> obtenerDirectorios() {
         ListaEnlazada<Directorio> directorios = new ListaEnlazada<>();
         for (int i = 0; i < hijos.getTamanio(); i++) {
@@ -102,17 +106,17 @@ public class Directorio extends NodoArbol {
         return directorios;
     }
     
-
+ 
     public boolean estaVacio() {
         return hijos.estaVacia();
     }
     
-
+    // Getters
     public ListaEnlazada<NodoArbol> getHijos() {
         return hijos;
     }
     
-
+   
     public String obtenerInformacion() {
         StringBuilder sb = new StringBuilder();
         sb.append("Nombre: ").append(nombre).append("\n");

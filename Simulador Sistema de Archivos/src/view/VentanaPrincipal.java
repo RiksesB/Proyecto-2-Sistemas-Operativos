@@ -7,21 +7,17 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
-/**
- * Ventana principal 
- */
+
 public class VentanaPrincipal extends JFrame {
     
     private ControladorPrincipal controlador;
     
-  
     private PanelArbolArchivos panelArbol;
     private PanelDisco panelDisco;
     private PanelTablaAsignacion panelTabla;
     private PanelProcesos panelProcesos;
     private PanelSimulador panelSimulador;
 
-   
     private JLabel lblUsuarioActual;
     private JComboBox<String> cmbModoUsuario;
     private JComboBox<TipoPlanificacion> cmbPlanificacion;
@@ -29,7 +25,7 @@ public class VentanaPrincipal extends JFrame {
     private JButton btnGuardar;
     private JButton btnCargar;
     
-  
+
     public VentanaPrincipal(int tamanioDiscoEnBloques) {
         this.controlador = new ControladorPrincipal(tamanioDiscoEnBloques);
         
@@ -38,40 +34,35 @@ public class VentanaPrincipal extends JFrame {
         configurarEventos();
     }
     
-   
+
     private void inicializarComponentes() {
         setLayout(new BorderLayout(10, 10));
 
-       
         JPanel panelSuperior = crearPanelSuperior();
         add(panelSuperior, BorderLayout.NORTH);
 
-     
         JPanel panelCentral = crearPanelCentral();
 
         panelSimulador = new PanelSimulador(controlador);
         JPanel contenedorSimulador = crearPanelConTitulo("🔄 Simulador de I/O", panelSimulador);
 
-      
         JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, panelCentral, contenedorSimulador);
-        splitPane.setDividerLocation(600); // Posición inicial del divisor
-        splitPane.setResizeWeight(0.7); // 70% arriba, 30% abajo al redimensionar
-        splitPane.setOneTouchExpandable(true); // Botones para colapsar rápidamente
+        splitPane.setDividerLocation(600); 
+        splitPane.setResizeWeight(0.7); 
+        splitPane.setOneTouchExpandable(true); 
         splitPane.setDividerSize(8);
 
         add(splitPane, BorderLayout.CENTER);
 
-        
         JPanel panelInferior = crearPanelInferior();
         add(panelInferior, BorderLayout.SOUTH);
     }
-
+    
     private JPanel crearPanelSuperior() {
         JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 5));
         panel.setBackground(new Color(60, 63, 65));
         panel.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
         
-      
         JLabel lblUsuario = new JLabel("Usuario:");
         lblUsuario.setForeground(Color.WHITE);
         panel.add(lblUsuario);
@@ -83,7 +74,6 @@ public class VentanaPrincipal extends JFrame {
         
         panel.add(Box.createHorizontalStrut(20));
         
-       
         JLabel lblModo = new JLabel("Modo:");
         lblModo.setForeground(Color.WHITE);
         panel.add(lblModo);
@@ -93,7 +83,6 @@ public class VentanaPrincipal extends JFrame {
         panel.add(cmbModoUsuario);
         
         panel.add(Box.createHorizontalStrut(20));
-        
         
         JLabel lblPlanif = new JLabel("Planificación:");
         lblPlanif.setForeground(Color.WHITE);
@@ -105,7 +94,6 @@ public class VentanaPrincipal extends JFrame {
         
         panel.add(Box.createHorizontalStrut(20));
         
-      
         btnEstadisticas = new JButton("📊 Estadísticas");
         btnEstadisticas.setFocusPainted(false);
         panel.add(btnEstadisticas);
@@ -127,24 +115,24 @@ public class VentanaPrincipal extends JFrame {
         panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         panel.setBackground(new Color(43, 43, 43));
         
-      
+        // Panel 1: Árbol de archivos (superior izquierdo)
         panelArbol = new PanelArbolArchivos(controlador);
-        JPanel contenedorArbol = crearPanelConTitulo("📁 Sistema de Archivos", panelArbol);
+        JPanel contenedorArbol = crearPanelConTitulo("Sistema de Archivos", panelArbol);
         panel.add(contenedorArbol);
         
-      
+        // Panel 2: Disco (superior derecho)
         panelDisco = new PanelDisco(controlador);
-        JPanel contenedorDisco = crearPanelConTitulo("💾 Disco Virtual", panelDisco);
+        JPanel contenedorDisco = crearPanelConTitulo("Disco Virtual", panelDisco);
         panel.add(contenedorDisco);
         
-      
+        // Panel 3: Tabla de asignación (inferior izquierdo)
         panelTabla = new PanelTablaAsignacion(controlador);
-        JPanel contenedorTabla = crearPanelConTitulo("📋 Tabla de Asignación", panelTabla);
+        JPanel contenedorTabla = crearPanelConTitulo("Tabla de Asignación", panelTabla);
         panel.add(contenedorTabla);
         
-       
+        // Panel 4: Procesos (inferior derecho)
         panelProcesos = new PanelProcesos(controlador);
-        JPanel contenedorProcesos = crearPanelConTitulo("⚙️ Procesos", panelProcesos);
+        JPanel contenedorProcesos = crearPanelConTitulo("Procesos", panelProcesos);
         panel.add(contenedorProcesos);
         
         return panel;
@@ -156,7 +144,6 @@ public class VentanaPrincipal extends JFrame {
         panel.setBackground(new Color(60, 63, 65));
         panel.setBorder(BorderFactory.createLineBorder(new Color(80, 80, 80), 2));
         
-       
         JLabel lblTitulo = new JLabel(titulo);
         lblTitulo.setFont(new Font("Arial", Font.BOLD, 14));
         lblTitulo.setForeground(Color.WHITE);
@@ -165,18 +152,16 @@ public class VentanaPrincipal extends JFrame {
         lblTitulo.setOpaque(true);
         panel.add(lblTitulo, BorderLayout.NORTH);
         
-     
         panel.add(contenido, BorderLayout.CENTER);
         
         return panel;
     }
-
+    
     private JPanel crearPanelInferior() {
         JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT, 20, 5));
         panel.setBackground(new Color(60, 63, 65));
         panel.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
         
-       
         JLabel lblInfo = new JLabel("Sistema de Archivos Virtual v1.0");
         lblInfo.setForeground(Color.LIGHT_GRAY);
         panel.add(lblInfo);
@@ -184,7 +169,6 @@ public class VentanaPrincipal extends JFrame {
         return panel;
     }
     
-  
     private void configurarVentana() {
         setTitle("Simulador de Sistema de Archivos");
         setSize(1400, 900);
@@ -192,15 +176,21 @@ public class VentanaPrincipal extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         
-       
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                if (panelSimulador != null) {
+                    panelSimulador.detener();
+                }
+                System.exit(0);
+            }
+        });
+        
         try {
-          
         } catch (Exception e) {
-         
         }
     }
-    
-
+ 
     private void configurarEventos() {
         // Cambio de modo de usuario
         cmbModoUsuario.addActionListener(e -> {
@@ -229,7 +219,7 @@ public class VentanaPrincipal extends JFrame {
             }
         });
         
-       
+        // Cambio de algoritmo de planificación
         cmbPlanificacion.addActionListener(e -> {
             TipoPlanificacion tipo = (TipoPlanificacion) cmbPlanificacion.getSelectedItem();
             if (tipo != null) {
@@ -243,16 +233,16 @@ public class VentanaPrincipal extends JFrame {
             }
         });
         
-      
+        // Botón estadísticas
         btnEstadisticas.addActionListener(e -> mostrarEstadisticas());
         
-        
+        // Botón guardar
         btnGuardar.addActionListener(e -> guardarSistema());
         
-       
+        // Botón cargar
         btnCargar.addActionListener(e -> cargarSistema());
         
-    
+        // Cerrar ventana
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
@@ -271,7 +261,7 @@ public class VentanaPrincipal extends JFrame {
                 } else if (opcion == JOptionPane.NO_OPTION) {
                     System.exit(0);
                 }
-            
+                // Si es CANCEL, no hace nada
             }
         });
     }
@@ -297,7 +287,7 @@ public class VentanaPrincipal extends JFrame {
         );
     }
     
- 
+
     private boolean guardarSistema() {
         boolean exito = controlador.guardarSistema();
         
@@ -320,7 +310,7 @@ public class VentanaPrincipal extends JFrame {
         return exito;
     }
     
-  
+
     private void cargarSistema() {
         int opcion = JOptionPane.showConfirmDialog(
             this,
@@ -352,7 +342,7 @@ public class VentanaPrincipal extends JFrame {
         }
     }
     
- 
+
     public void actualizarTodo() {
         panelArbol.actualizar();
         panelDisco.actualizar();
@@ -363,8 +353,12 @@ public class VentanaPrincipal extends JFrame {
         lblUsuarioActual.setText(controlador.getSistema().getUsuarioActual().getNombre());
     }
     
- 
+
     public ControladorPrincipal getControlador() {
         return controlador;
+    }
+
+    public PanelArbolArchivos getPanelArbol() {
+        return panelArbol;
     }
 }

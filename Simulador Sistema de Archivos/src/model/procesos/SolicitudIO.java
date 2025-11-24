@@ -1,10 +1,8 @@
 package model.procesos;
 
-/**
- * Representa una solicitud de entrada/salida al disco
- */
+
 public class SolicitudIO {
-    private int pid; 
+    private int pid; // ID del proceso que hace la solicitud
     private TipoOperacion operacion;
     private int bloqueDestino;
     private String nombreArchivo;
