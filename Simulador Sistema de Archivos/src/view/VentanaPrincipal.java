@@ -17,7 +17,6 @@ public class VentanaPrincipal extends JFrame {
     private PanelTablaAsignacion panelTabla;
     private PanelProcesos panelProcesos;
     private PanelSimulador panelSimulador;
-    private PanelBuffer panelBuffer;
 
     private JLabel lblUsuarioActual;
     private JComboBox<String> cmbModoUsuario;
@@ -117,7 +116,7 @@ public class VentanaPrincipal extends JFrame {
     
   
     private JPanel crearPanelCentral() {
-        JPanel panel = new JPanel(new GridLayout(2, 3, 10, 10));
+        JPanel panel = new JPanel(new GridLayout(2, 2, 10, 10));
         panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         panel.setBackground(new Color(43, 43, 43));
         
@@ -126,40 +125,20 @@ public class VentanaPrincipal extends JFrame {
         JPanel contenedorArbol = crearPanelConTitulo("Sistema de Archivos", panelArbol);
         panel.add(contenedorArbol);
         
-        // Panel 2: Disco (superior centro)
+        // Panel 2: Disco (superior derecho)
         panelDisco = new PanelDisco(controlador);
         JPanel contenedorDisco = crearPanelConTitulo("Disco Virtual", panelDisco);
         panel.add(contenedorDisco);
         
-        // Panel 3: Buffer (superior derecho)
-        panelBuffer = new PanelBuffer(controlador);
-        JPanel contenedorBuffer = crearPanelConTitulo("Buffer de Memoria", panelBuffer);
-        panel.add(contenedorBuffer);
-        
-        // Panel 4: Tabla de asignación (inferior izquierdo)
+        // Panel 3: Tabla de asignación (inferior izquierdo)
         panelTabla = new PanelTablaAsignacion(controlador);
         JPanel contenedorTabla = crearPanelConTitulo("Tabla de Asignación", panelTabla);
         panel.add(contenedorTabla);
         
-        // Panel 5: Procesos (inferior centro)
+        // Panel 4: Procesos (inferior derecho)
         panelProcesos = new PanelProcesos(controlador);
         JPanel contenedorProcesos = crearPanelConTitulo("Procesos", panelProcesos);
         panel.add(contenedorProcesos);
-        
-        // Panel 6: Espacio reservado o info adicional (inferior derecho)
-        JPanel panelInfo = new JPanel(new BorderLayout());
-        panelInfo.setBackground(new Color(43, 43, 43));
-        JLabel lblInfo = new JLabel("<html><center><b>Sistema de Archivos Virtual</b><br><br>"
-                + "Algoritmos de Planificación:<br>"
-                + "• FIFO, SSTF<br>"
-                + "• SCAN, C-SCAN<br>"
-                + "• LOOK, C-LOOK</center></html>");
-        lblInfo.setForeground(Color.LIGHT_GRAY);
-        lblInfo.setHorizontalAlignment(SwingConstants.CENTER);
-        lblInfo.setFont(new Font("Arial", Font.PLAIN, 11));
-        panelInfo.add(lblInfo, BorderLayout.CENTER);
-        JPanel contenedorInfo = crearPanelConTitulo("Información", panelInfo);
-        panel.add(contenedorInfo);
         
         return panel;
     }
@@ -375,7 +354,6 @@ public class VentanaPrincipal extends JFrame {
         panelTabla.actualizar();
         panelProcesos.actualizar();
         panelSimulador.actualizar();
-        panelBuffer.actualizar();
 
         lblUsuarioActual.setText(controlador.getSistema().getUsuarioActual().getNombre());
     }

@@ -269,6 +269,17 @@ public class ControladorPrincipal {
             if (solicitud != null) {
                 int bloqueDestino = solicitud.getBloqueDestino();
                 
+                String datosBuffer = gestorBuffer.buscarBloque(bloqueDestino);
+
+                if (datosBuffer == null) {
+                    // Solo si NO está en buffer, cargar desde disco
+                    model.disco.Bloque bloqueDisco = gestorDisco.getDisco().obtenerBloque(bloqueDestino);
+                    if (bloqueDisco != null && bloqueDisco.estaOcupado()) {
+                        String datos = "Datos del bloque " + bloqueDestino + " - " + archivo.getNombre();
+                        gestorBuffer.agregarBloque(bloqueDestino, datos);
+                    }
+                }
+                
                 int movimiento = Math.abs(bloqueDestino - posicionActual);
                 movimientoTotal += movimiento;
                 posicionActual = bloqueDestino;
