@@ -281,7 +281,7 @@ public class PanelDisco extends JPanel implements SimuladorIO.ObservadorSimulaci
         SwingUtilities.invokeLater(() -> {
             SimuladorIO.EstadoSimulacion estado = simulador.getEstadoActual();
             
-            // Resaltar bloque cuando está moviendo o asignando
+            // Resaltar bloque durante movimiento y asignación
             if (estado == SimuladorIO.EstadoSimulacion.MOVIENDO_CABEZAL ||
                 estado == SimuladorIO.EstadoSimulacion.ASIGNANDO_BLOQUE) {
                 

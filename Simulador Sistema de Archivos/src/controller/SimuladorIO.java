@@ -153,7 +153,7 @@ public class SimuladorIO {
 
             case CREANDO_PROCESO:
                 estadoActual = EstadoSimulacion.EJECUTANDO_PROCESO;
-                cicloPausa = 1;
+                cicloPausa = 0;
                 huboCambio = true;
                 break;
 
@@ -162,13 +162,13 @@ public class SimuladorIO {
                     procesoActual.setEstado(EstadoProceso.EJECUTANDO);
                 }
                 estadoActual = EstadoSimulacion.GENERANDO_SOLICITUDES;
-                cicloPausa = 1;
+                cicloPausa = 0;
                 huboCambio = true;
                 break;
 
             case GENERANDO_SOLICITUDES:
                 estadoActual = EstadoSimulacion.PLANIFICANDO_IO;
-                cicloPausa = 1;
+                cicloPausa = 0;
                 huboCambio = true;
                 break;
 
@@ -182,7 +182,7 @@ public class SimuladorIO {
                 } else {
                     estadoActual = EstadoSimulacion.TERMINANDO_PROCESO;
                 }
-                cicloPausa = 1;
+                cicloPausa = 0;
                 huboCambio = true;
                 break;
 
@@ -215,7 +215,7 @@ public class SimuladorIO {
                 } else {
                     estadoActual = EstadoSimulacion.TERMINANDO_PROCESO;
                 }
-                cicloPausa = 2;
+                cicloPausa = 0;
                 huboCambio = true;
                 break;
 
@@ -224,7 +224,7 @@ public class SimuladorIO {
                     procesoActual.setEstado(EstadoProceso.TERMINADO);
                 }
                 estadoActual = EstadoSimulacion.COMPLETADO;
-                cicloPausa = 1;
+                cicloPausa = 0;
                 huboCambio = true;
                 break;
 
