@@ -1,13 +1,11 @@
 package controller;
 
+import javax.swing.Timer;
+import model.archivos.Archivo;
+import model.procesos.EstadoProceso;
 import model.procesos.Proceso;
 import model.procesos.SolicitudIO;
-import model.procesos.EstadoProceso;
-import model.archivos.Archivo;
 import util.estructuras.ListaEnlazada;
-import java.util.ArrayList;
-import java.util.List;
-import javax.swing.Timer;
 
 
 public class SimuladorIO {
@@ -57,7 +55,7 @@ public class SimuladorIO {
     private boolean pausado;
     
     // Observadores para sincronización con UI
-    private List<ObservadorSimulacion> observadores;
+    private ListaEnlazada<ObservadorSimulacion> observadores;
     private Timer timerAuto;
 
     
@@ -69,24 +67,40 @@ public class SimuladorIO {
         this.solicitudesPendientes = new ListaEnlazada<>();
         this.indiceSolicitudActual = 0;
         this.cicloPausa = 0;
-        this.observadores = new ArrayList<>();
+        this.observadores = new ListaEnlazada<>();
     }
     
    
     public void agregarObservador(ObservadorSimulacion observador) {
-        if (!observadores.contains(observador)) {
-            observadores.add(observador);
+        // Verificar si ya existe para evitar duplicados
+        boolean existe = false;
+        for (int i = 0; i < observadores.getTamanio(); i++) {
+            if (observadores.obtener(i) == observador) {
+                existe = true;
+                break;
+            }
+        }
+        if (!existe) {
+            observadores.agregarAlFinal(observador);
         }
     }
     
     
     public void eliminarObservador(ObservadorSimulacion observador) {
-        observadores.remove(observador);
+        for (int i = 0; i < observadores.getTamanio(); i++) {
+            if (observadores.obtener(i) == observador) {
+                observadores.eliminarEnPosicion(i);
+                break;
+            }
+        }
     }
     
     private void notificarCambio() {
-        for (ObservadorSimulacion obs : observadores) {
-            obs.onSimulacionActualizada();
+        for (int i = 0; i < observadores.getTamanio(); i++) {
+            ObservadorSimulacion obs = observadores.obtener(i);
+            if (obs != null) {
+                obs.onSimulacionActualizada();
+            }
         }
     }
 
