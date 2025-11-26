@@ -1,5 +1,11 @@
 # Simulador Virtual de Sistema de Archivos
 
+## 📄 Documentación
+
+**[📖 Ver Informe Técnico Completo](./Informe%20Simulador%20Archivos%20-%20Ricardo%20Baeta-Aida-Cardenas-Rene%20Chamorro.pdf)**
+
+---
+
 ## Descripción del Proyecto
 
 Este proyecto consiste en el desarrollo de un simulador de sistema de archivos avanzado que permite comprender y aplicar conceptos fundamentales de sistemas operativos como la gestión de archivos y directorios, la asignación de bloques de almacenamiento, la administración de permisos, la fragmentación del espacio en disco, y la gestión de operaciones de entrada/salida mediante procesos de usuario.
