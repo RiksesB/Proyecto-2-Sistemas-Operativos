@@ -14,7 +14,6 @@ public class PanelBuffer extends JPanel {
     private JComboBox<GestorBuffer.PoliticaReemplazo> comboPolitica;
     private JButton btnLimpiar;
     private JButton btnReiniciarEstadisticas;
-    private boolean inicializado = false;
     
 
     public PanelBuffer(ControladorPrincipal controlador) {
@@ -84,7 +83,6 @@ public class PanelBuffer extends JPanel {
         
         // Actualizar información inicial
         actualizar();
-        inicializado = true; // Marcar como inicializado después de la primera actualización
     }
     
 
