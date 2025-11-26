@@ -36,7 +36,7 @@ public class VentanaPrincipal extends JFrame {
     
 
     private void inicializarComponentes() {
-        setLayout(new BorderLayout(10, 10));
+        setLayout(new BorderLayout(5, 5));
 
         JPanel panelSuperior = crearPanelSuperior();
         add(panelSuperior, BorderLayout.NORTH);
@@ -47,15 +47,20 @@ public class VentanaPrincipal extends JFrame {
         JPanel contenedorSimulador = crearPanelConTitulo("🔄 Simulador de I/O", panelSimulador);
 
         JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, panelCentral, contenedorSimulador);
-        splitPane.setDividerLocation(600); 
-        splitPane.setResizeWeight(0.7); 
+        splitPane.setResizeWeight(0.65); 
         splitPane.setOneTouchExpandable(true); 
-        splitPane.setDividerSize(8);
+        splitPane.setDividerSize(10);
+        splitPane.setContinuousLayout(true);
 
         add(splitPane, BorderLayout.CENTER);
 
         JPanel panelInferior = crearPanelInferior();
         add(panelInferior, BorderLayout.SOUTH);
+        
+        // Configurar el divider después de que la ventana esté visible
+        SwingUtilities.invokeLater(() -> {
+            splitPane.setDividerLocation(0.65);
+        });
     }
     
     private JPanel crearPanelSuperior() {
@@ -171,8 +176,8 @@ public class VentanaPrincipal extends JFrame {
     
     private void configurarVentana() {
         setTitle("Simulador de Sistema de Archivos");
-        setSize(1400, 900);
-        setMinimumSize(new Dimension(1200, 800));
+        setSize(1500, 950);
+        setMinimumSize(new Dimension(1300, 850));
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         

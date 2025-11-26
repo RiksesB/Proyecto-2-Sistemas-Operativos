@@ -281,11 +281,12 @@ public class PanelDisco extends JPanel implements SimuladorIO.ObservadorSimulaci
         SwingUtilities.invokeLater(() -> {
             SimuladorIO.EstadoSimulacion estado = simulador.getEstadoActual();
             
-            // Resaltar bloque SOLO cuando está asignando
-            if (estado == SimuladorIO.EstadoSimulacion.ASIGNANDO_BLOQUE) {
+            // Resaltar bloque cuando está moviendo o asignando
+            if (estado == SimuladorIO.EstadoSimulacion.MOVIENDO_CABEZAL ||
+                estado == SimuladorIO.EstadoSimulacion.ASIGNANDO_BLOQUE) {
                 
                 int posicionCabezal = simulador.getPosicionCabezalActual();
-                resaltarBloque(posicionCabezal);
+                resaltarBloqueSuave(posicionCabezal);
                 
             } else if (estado == SimuladorIO.EstadoSimulacion.COMPLETADO ||
                        estado == SimuladorIO.EstadoSimulacion.ESPERANDO) {
@@ -294,7 +295,45 @@ public class PanelDisco extends JPanel implements SimuladorIO.ObservadorSimulaci
                 // Actualizar todo el disco para mostrar bloques asignados
                 actualizarInfo();
                 dibujarDisco();
+            } else if (estado == SimuladorIO.EstadoSimulacion.PLANIFICANDO_IO) {
+                // Actualizar info durante planificación
+                actualizarInfo();
             }
         });
+    }
+    
+    private void resaltarBloqueSuave(int numeroBloque) {
+        // Detener parpadeo durante movimiento para visualización más suave
+        if (timerParpadeo.isRunning()) {
+            timerParpadeo.stop();
+        }
+        
+        // Restaurar bloque anterior
+        if (bloqueResaltado != null && bloqueResaltado != numeroBloque) {
+            JPanel panelAnterior = mapaBloques.get(bloqueResaltado);
+            if (panelAnterior != null) {
+                Bloque[] bloques = controlador.getGestorDisco().getDisco().getBloques();
+                if (bloqueResaltado < bloques.length) {
+                    Bloque bloque = bloques[bloqueResaltado];
+                    if (bloque.estaLibre()) {
+                        panelAnterior.setBackground(new Color(60, 60, 60));
+                    } else {
+                        Archivo archivo = bloque.getArchivoPropietario();
+                        if (archivo != null) {
+                            panelAnterior.setBackground(archivo.getColor());
+                        }
+                    }
+                    panelAnterior.repaint();
+                }
+            }
+        }
+        
+        // Resaltar nuevo bloque
+        bloqueResaltado = numeroBloque;
+        JPanel panel = mapaBloques.get(numeroBloque);
+        if (panel != null) {
+            panel.setBackground(Color.YELLOW);
+            panel.repaint();
+        }
     }
 }

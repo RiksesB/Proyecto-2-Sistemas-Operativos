@@ -151,11 +151,11 @@ public class PanelSimulador extends JPanel implements SimuladorIO.ObservadorSimu
         JPanel panelVelocidad = new JPanel(new FlowLayout(FlowLayout.CENTER));
         panelVelocidad.setBackground(new Color(45, 45, 45));
         
-        lblVelocidad = new JLabel("Velocidad: 500 ms");
+        lblVelocidad = new JLabel("Velocidad: 300 ms");
         lblVelocidad.setForeground(Color.WHITE);
         lblVelocidad.setFont(new Font("Segoe UI", Font.PLAIN, 11));
         
-        sliderVelocidad = new JSlider(100, 2000, 500);
+        sliderVelocidad = new JSlider(100, 2000, 300);
         sliderVelocidad.setInverted(true);
         sliderVelocidad.setMajorTickSpacing(500);
         sliderVelocidad.setMinorTickSpacing(100);
@@ -200,27 +200,50 @@ public class PanelSimulador extends JPanel implements SimuladorIO.ObservadorSimu
     }
     
     private void completar() {
-        try {
-            simulador.completar();
-            
-            if (simulador.getArchivoActual() != null && simulador.getDirectorioActual() != null) {
-                controlador.completarSimulacion(
-                    simulador.getArchivoActual(),
-                    simulador.getDirectorioActual()
-                );
-                
-                Window window = SwingUtilities.getWindowAncestor(this);
-                if (window instanceof VentanaPrincipal) {
-                    ((VentanaPrincipal) window).actualizarTodo();
-                }
+        btnCompletar.setEnabled(false);
+        agregarLog("⏭ Completando simulación...");
+        
+        SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
+            @Override
+            protected Void doInBackground() throws Exception {
+                simulador.completar();
+                return null;
             }
             
-            btnAuto.setText("⏯ Auto");
-            btnAuto.setBackground(new Color(76, 175, 80));
-            agregarLog("⏭ Simulación completada instantáneamente");
-        } catch (Exception ex) {
-            agregarLog("❌ Error al completar: " + ex.getMessage());
-        }
+            @Override
+            protected void done() {
+                try {
+                    get(); // Verificar si hubo excepciones
+                    
+                    if (simulador.getArchivoActual() != null && simulador.getDirectorioActual() != null) {
+                        controlador.completarSimulacion(
+                            simulador.getArchivoActual(),
+                            simulador.getDirectorioActual()
+                        );
+                        
+                        Window window = SwingUtilities.getWindowAncestor(PanelSimulador.this);
+                        if (window instanceof VentanaPrincipal) {
+                            ((VentanaPrincipal) window).actualizarTodo();
+                        }
+                    }
+                    
+                    btnAuto.setText("⏯ Auto");
+                    btnAuto.setBackground(new Color(76, 175, 80));
+                    agregarLog("✓ Simulación completada instantáneamente");
+                    
+                    // Actualizar UI con el resultado final
+                    actualizarEstado();
+                    actualizarProgreso();
+                    
+                } catch (Exception ex) {
+                    agregarLog("❌ Error al completar: " + ex.getMessage());
+                } finally {
+                    btnCompletar.setEnabled(true);
+                }
+            }
+        };
+        
+        worker.execute();
     }
     
     private void reiniciar() {

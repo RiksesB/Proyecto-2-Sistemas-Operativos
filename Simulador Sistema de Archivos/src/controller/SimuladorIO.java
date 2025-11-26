@@ -64,7 +64,7 @@ public class SimuladorIO {
     public SimuladorIO(GestorProcesos gestorProcesos, GestorDisco gestorDisco) {
         this.gestorDisco = gestorDisco;
         this.estadoActual = EstadoSimulacion.ESPERANDO;
-        this.velocidadSimulacion = 500; // 500ms por defecto
+        this.velocidadSimulacion = 300; // 300ms por defecto para mejor visualización
         this.pausado = false;
         this.solicitudesPendientes = new ListaEnlazada<>();
         this.indiceSolicitudActual = 0;
@@ -178,16 +178,18 @@ public class SimuladorIO {
                     posicionCabezalActual++;
                     gestorDisco.getDisco().setPosicionCabezal(posicionCabezalActual);
                     huboCambio = true;
+                    cicloPausa = 0; // Sin pausa para movimiento suave
                 } else if (posicionCabezalActual > posicionCabezalDestino) {
                     posicionCabezalActual--;
                     gestorDisco.getDisco().setPosicionCabezal(posicionCabezalActual);
                     huboCambio = true;
+                    cicloPausa = 0; // Sin pausa para movimiento suave
                 } else {
                     // Llegó al destino
                     estadoActual = EstadoSimulacion.ASIGNANDO_BLOQUE;
                     huboCambio = true;
+                    cicloPausa = 1; // Pequeña pausa al asignar
                 }
-                cicloPausa = 0; // Sin pausa para movimiento suave
                 break;
 
             case ASIGNANDO_BLOQUE:
