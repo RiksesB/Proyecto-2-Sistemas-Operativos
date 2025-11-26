@@ -626,6 +626,8 @@ public class ControladorPrincipal {
                     posicionActual = bloqueDestino;
                     
                     gestorDisco.getDisco().setPosicionCabezal(bloqueDestino);
+                    String datos = "Datos del archivo " + pendiente.archivo.getNombre();
+                    gestorBuffer.agregarBloque(bloqueDestino, datos);
                 }
             }
             
