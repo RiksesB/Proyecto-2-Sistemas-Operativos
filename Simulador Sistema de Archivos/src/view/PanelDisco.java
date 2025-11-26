@@ -281,12 +281,32 @@ public class PanelDisco extends JPanel implements SimuladorIO.ObservadorSimulaci
         SwingUtilities.invokeLater(() -> {
             SimuladorIO.EstadoSimulacion estado = simulador.getEstadoActual();
             
-            // Resaltar bloque durante movimiento y asignación
-            if (estado == SimuladorIO.EstadoSimulacion.MOVIENDO_CABEZAL ||
-                estado == SimuladorIO.EstadoSimulacion.ASIGNANDO_BLOQUE) {
-                
+            // Resaltar bloque SOLO cuando está asignando (procesando el bloque)
+            if (estado == SimuladorIO.EstadoSimulacion.ASIGNANDO_BLOQUE) {
                 int posicionCabezal = simulador.getPosicionCabezalActual();
                 resaltarBloqueSuave(posicionCabezal);
+                
+            } else if (estado == SimuladorIO.EstadoSimulacion.MOVIENDO_CABEZAL) {
+                // Durante movimiento, limpiar resaltado anterior sin marcar nada
+                if (bloqueResaltado != null) {
+                    JPanel panelAnterior = mapaBloques.get(bloqueResaltado);
+                    if (panelAnterior != null) {
+                        Bloque[] bloques = controlador.getGestorDisco().getDisco().getBloques();
+                        if (bloqueResaltado < bloques.length) {
+                            Bloque bloque = bloques[bloqueResaltado];
+                            if (bloque.estaLibre()) {
+                                panelAnterior.setBackground(new Color(60, 60, 60));
+                            } else {
+                                Archivo archivo = bloque.getArchivoPropietario();
+                                if (archivo != null) {
+                                    panelAnterior.setBackground(archivo.getColor());
+                                }
+                            }
+                            panelAnterior.repaint();
+                        }
+                    }
+                    bloqueResaltado = null;
+                }
                 
             } else if (estado == SimuladorIO.EstadoSimulacion.COMPLETADO ||
                        estado == SimuladorIO.EstadoSimulacion.ESPERANDO) {

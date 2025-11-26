@@ -14,6 +14,7 @@ public class PanelBuffer extends JPanel {
     private JComboBox<GestorBuffer.PoliticaReemplazo> comboPolitica;
     private JButton btnLimpiar;
     private JButton btnReiniciarEstadisticas;
+    private boolean inicializado = false;
     
 
     public PanelBuffer(ControladorPrincipal controlador) {
@@ -33,27 +34,36 @@ public class PanelBuffer extends JPanel {
         // Información del buffer
         lblInfo = new JLabel("Buffer: 0/20 bloques");
         lblInfo.setForeground(Color.WHITE);
-        lblInfo.setFont(new Font("Arial", Font.BOLD, 12));
-        lblInfo.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        lblInfo.setFont(new Font("Arial", Font.BOLD, 10));
+        lblInfo.setBorder(BorderFactory.createEmptyBorder(3, 5, 3, 5));
         panelSuperior.add(lblInfo, BorderLayout.WEST);
         
         // Panel de controles
-        JPanel panelControles = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        JPanel panelControles = new JPanel(new FlowLayout(FlowLayout.RIGHT, 3, 2));
         panelControles.setBackground(new Color(43, 43, 43));
         
         JLabel lblPolitica = new JLabel("Política:");
         lblPolitica.setForeground(Color.WHITE);
+        lblPolitica.setFont(new Font("Arial", Font.PLAIN, 9));
         panelControles.add(lblPolitica);
         
         comboPolitica = new JComboBox<>(GestorBuffer.PoliticaReemplazo.values());
+        comboPolitica.setFont(new Font("Arial", Font.PLAIN, 9));
+        comboPolitica.setPreferredSize(new Dimension(65, 20));
         comboPolitica.addActionListener(e -> cambiarPolitica());
         panelControles.add(comboPolitica);
         
-        btnReiniciarEstadisticas = new JButton("Reiniciar Estadísticas");
+        btnReiniciarEstadisticas = new JButton("🔄 Reiniciar");
+        btnReiniciarEstadisticas.setFont(new Font("Arial", Font.PLAIN, 9));
+        btnReiniciarEstadisticas.setPreferredSize(new Dimension(80, 20));
+        btnReiniciarEstadisticas.setFocusPainted(false);
         btnReiniciarEstadisticas.addActionListener(e -> reiniciarEstadisticas());
         panelControles.add(btnReiniciarEstadisticas);
         
-        btnLimpiar = new JButton("Limpiar Buffer");
+        btnLimpiar = new JButton("🧹 Limpiar");
+        btnLimpiar.setFont(new Font("Arial", Font.PLAIN, 9));
+        btnLimpiar.setPreferredSize(new Dimension(75, 20));
+        btnLimpiar.setFocusPainted(false);
         btnLimpiar.addActionListener(e -> limpiarBuffer());
         panelControles.add(btnLimpiar);
         
@@ -65,7 +75,7 @@ public class PanelBuffer extends JPanel {
         txtBuffer.setEditable(false);
         txtBuffer.setBackground(new Color(50, 50, 50));
         txtBuffer.setForeground(Color.WHITE);
-        txtBuffer.setFont(new Font("Monospaced", Font.PLAIN, 11));
+        txtBuffer.setFont(new Font("Monospaced", Font.PLAIN, 12));
         txtBuffer.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         
         JScrollPane scroll = new JScrollPane(txtBuffer);
@@ -74,6 +84,7 @@ public class PanelBuffer extends JPanel {
         
         // Actualizar información inicial
         actualizar();
+        inicializado = true; // Marcar como inicializado después de la primera actualización
     }
     
 
@@ -83,12 +94,6 @@ public class PanelBuffer extends JPanel {
         if (politica != null) {
             controlador.cambiarPoliticaBuffer(politica);
             actualizar();
-            JOptionPane.showMessageDialog(
-                this,
-                "Política de reemplazo cambiada a: " + politica,
-                "Política Actualizada",
-                JOptionPane.INFORMATION_MESSAGE
-            );
         }
     }
     
@@ -130,12 +135,11 @@ public class PanelBuffer extends JPanel {
         GestorBuffer buffer = controlador.getGestorBuffer();
         
         // Actualizar label superior
-        lblInfo.setText(String.format("Buffer: %d/%d bloques | Hits: %d | Misses: %d | Tasa Hit: %.1f%%",
+        lblInfo.setText(String.format("Buffer: %d/%d bloques | Hits: %d | Misses: %d",
             buffer.getTamanioActual(),
             buffer.getTamanioMaximo(),
             buffer.getHits(),
-            buffer.getMisses(),
-            buffer.getTasaHit()
+            buffer.getMisses()
         ));
         
         StringBuilder sb = new StringBuilder();
