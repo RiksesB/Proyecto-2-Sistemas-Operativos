@@ -270,17 +270,4 @@ Se diseñó una interfaz dividida en múltiples paneles para:
 - Actualización en tiempo real de todos los componentes
 - Experiencia de usuario intuitiva y profesional
 
-## Autores
 
-Proyecto desarrollado para la materia de Sistemas Operativos - Universidad Metropolitana
-
-**Trimestre:** 2425-2  
-**Preparadores:** Sofia León y Marielena Ginez
-
-## Licencia
-
-Este proyecto es de uso académico para la Universidad Metropolitana.
-
----
-
-**Nota:** Este simulador es una herramienta educativa diseñada para comprender los conceptos fundamentales de sistemas de archivos y no representa una implementación de sistema de archivos real para uso en producción.
